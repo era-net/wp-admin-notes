@@ -1,1 +1,3 @@
 *.mo
+composer.phar
+/vendor/

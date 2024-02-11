@@ -22,6 +22,7 @@ function wpn_admin_init() {
 
 add_action( 'admin_enqueue_scripts', 'wpn_enqueue_admin_scripts' );
 function wpn_enqueue_admin_scripts() {
+    wp_enqueue_style('wpn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/wpn-admin-markdown.css');
     wp_enqueue_script('wpn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/wpn-admin-notes.js', ['jquery'], '', true);
 }
 
@@ -59,11 +60,11 @@ function custom_toolbar_link($wp_admin_bar) {
     $args = array(
         'id' => 'wpn-notes-add',
         'parent' => 'top-secondary',
-        'title' => 'Search WPBeginner', 
+        'title' => '+ Add new Note', 
         'href' => 'javascript:void(0);', 
         'meta' => array(
             'class' => 'wpn-notes-add-note', 
-            'title' => 'Search WPBeginner Tutorials'
+            'title' => 'Add a new Markdown note to your Dashboard'
             )
     );
     $wp_admin_bar->add_node($args);

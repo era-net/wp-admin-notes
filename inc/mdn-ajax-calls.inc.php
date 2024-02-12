@@ -14,7 +14,7 @@ function mdn_add_new_note() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'posts';
-    $last_post = $wpdb->get_results('SELECT * FROM $table_name ORDER BY ID DESC LIMIT 1')[0];
+    $last_post = $wpdb->get_results("SELECT * FROM $table_name ORDER BY ID DESC LIMIT 1")[0];
 
     $note_id = absint($last_post->ID + 1);
     $widget_id = 'mdn_note_' . $note_id;

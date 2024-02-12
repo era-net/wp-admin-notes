@@ -123,7 +123,7 @@ function mdn_render_dashboard_widget($_, $args) {
 
     ob_start(); ?>
 
-    <div class="wpn-markdown-content">
+    <div class="mdn-markdown-content">
         <?= $html ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">

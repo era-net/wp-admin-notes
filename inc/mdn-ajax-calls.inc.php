@@ -8,9 +8,9 @@ use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 
-add_action( 'wp_ajax_nopriv_wpn_add_new_note', 'wpn_add_new_note' );
-add_action( 'wp_ajax_wpn_add_new_note', 'wpn_add_new_note' );
-function wpn_add_new_note() {
+add_action( 'wp_ajax_nopriv_mdn_add_new_note', 'mdn_add_new_note' );
+add_action( 'wp_ajax_mdn_add_new_note', 'mdn_add_new_note' );
+function mdn_add_new_note() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'posts';
@@ -18,9 +18,9 @@ function wpn_add_new_note() {
 
     $note_id = absint($last_post->ID + 1);
     $widget_id = "mdn_note_" . $note_id;
-    $title_id = "wpn_note_title_" . $note_id;
-    $content_id = "wpn_note_content_" . $note_id;
-    $text_content_id = "wpn_note_text_content_" . $note_id;
+    $title_id = "mdn_note_title_" . $note_id;
+    $content_id = "mdn_note_content_" . $note_id;
+    $text_content_id = "mdn_note_text_content_" . $note_id;
     $text_count_id = "mdn_note_text_count_" . $note_id;
 
     ob_start(); ?>
@@ -55,9 +55,9 @@ function wpn_add_new_note() {
     die();
 }
 
-add_action( 'wp_ajax_nopriv_wpn_save_note', 'wpn_save_note' );
-add_action( 'wp_ajax_wpn_save_note', 'wpn_save_note' );
-function wpn_save_note() {
+add_action( 'wp_ajax_nopriv_mdn_save_note', 'mdn_save_note' );
+add_action( 'wp_ajax_mdn_save_note', 'mdn_save_note' );
+function mdn_save_note() {
     $data = $_POST["data"];
     $note_content = sanitize_textarea_field($data["textContent"]);
     $char_count = strlen($note_content);
@@ -95,7 +95,7 @@ function wpn_save_note() {
         $converter = new MarkdownConverter($env);
         $html = $converter->convert($note_content)->getContent();
         ob_start() ?>
-        <div class="wpn-markdown-content">
+        <div class="mdn-markdown-content">
             <?= $html ?>
         </div>
         <div class="mdn-markdown-footer-flex-end">
@@ -163,7 +163,7 @@ function mdn_update_note() {
 
     ob_start(); ?>
 
-    <div class="wpn-markdown-content">
+    <div class="mdn-markdown-content">
         <?= $html ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
@@ -189,7 +189,7 @@ function mdn_update_form_content() {
     $post = get_post($id);
     $content = $post->post_content;
 
-    $text_content_id = "wpn_note_update_text_content_" . $id;
+    $text_content_id = "mdn_note_update_text_content_" . $id;
     $text_count_id = "mdn_note_update_text_count_" . $id;
 
     ob_start(); ?>

@@ -4,7 +4,7 @@
  * Plugin URI: #
  * Description: A handy markdown note block for your admin panel.
  * Version: 1.0.0
- * Text Domain: wpn-notes
+ * Text Domain: mdn-notes
  * Domain Path: /languages
  * Author: Ervinator
  * Author URI: https://era-kast.ch
@@ -20,10 +20,10 @@ use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 
-add_action( 'admin_init', 'wpn_admin_init' );
-function wpn_admin_init() {
-    require_once plugin_dir_path(__FILE__) . 'inc/wpn-ajax-calls.inc.php';
-    load_plugin_textdomain( 'wpn-notes', false, 'wp-admin-notes/languages' );
+add_action( 'admin_init', 'mdn_admin_init' );
+function mdn_admin_init() {
+    require_once plugin_dir_path(__FILE__) . 'inc/mdn-ajax-calls.inc.php';
+    load_plugin_textdomain( 'mdn-notes', false, 'wp-admin-notes/languages' );
 
     // Register Post Type
     register_post_type('mdn_note', [
@@ -39,14 +39,14 @@ function wpn_admin_init() {
     ]);
 }
 
-add_action( 'admin_enqueue_scripts', 'wpn_enqueue_admin_scripts' );
-function wpn_enqueue_admin_scripts() {
-    wp_enqueue_style('wpn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/wpn-admin-markdown.css');
-    wp_enqueue_script('wpn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/wpn-admin-notes.js', ['jquery'], '', true);
+add_action( 'admin_enqueue_scripts', 'mdn_enqueue_admin_scripts' );
+function mdn_enqueue_admin_scripts() {
+    wp_enqueue_style('mdn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/mdn-admin-notes.css');
+    wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.js', ['jquery'], '', true);
 }
 
 // add a link to the WP Toolbar
-function custom_toolbar_link($wp_admin_bar) {
+function mdn_custom_toolbar_link($wp_admin_bar) {
     $screen = get_current_screen();
 
     // Only show on dashboard
@@ -54,18 +54,18 @@ function custom_toolbar_link($wp_admin_bar) {
         return;
     }
     $args = array(
-        'id' => 'wpn-notes-add',
+        'id' => 'mdn-notes-add',
         'parent' => 'top-secondary',
         'title' => '+ Add new Note', 
         'href' => 'javascript:void(0);',
         'meta' => array(
-            'class' => 'wpn-notes-add-note', 
+            'class' => 'mdn-notes-add-note', 
             'title' => 'Add a new Markdown note to your Dashboard'
             )
     );
     $wp_admin_bar->add_node($args);
 }
-add_action('admin_bar_menu', 'custom_toolbar_link', 100000);
+add_action('admin_bar_menu', 'mdn_custom_toolbar_link', 100000);
 
 /**
  * RENDER DASHBOARD WIDGETS

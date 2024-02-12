@@ -1,9 +1,9 @@
 jQuery(document).ready(($) => {
-    $( document.body ).on( 'click', '.wpn-notes-add-note, #wpn-notes-add a', (e) => {
+    $( document.body ).on( 'click', '.mdn-notes-add-note, #mdn-notes-add a', (e) => {
         $.ajax({
             url: ajaxurl,
             method: "POST",
-            data: { action: 'wpn_add_new_note' },
+            data: { action: 'mdn_add_new_note' },
             success: (re) => {
                 re = jQuery.parseJSON( re );
                 $("#normal-sortables").prepend(re.note);
@@ -14,7 +14,7 @@ jQuery(document).ready(($) => {
                         $("#" + re.textContentId).trigger("blur");
                         re.textContent = $("#" + re.textContentId).val();
                         delete re.note;
-                        wpn_save_handler($, re);
+                        mdn_save_handler($, re);
                     }
                     if (e.keyCode==9 || e.which==9) {
                         let textarea = document.getElementById(re.textContentId);
@@ -41,17 +41,17 @@ jQuery(document).ready(($) => {
     mdn_init_delete_listeners($);
 });
 
-function wpn_save_handler($, obj) {
+function mdn_save_handler($, obj) {
     const data = obj;
     $.ajax({
         url: ajaxurl,
         method: "POST",
-        data: { action: 'wpn_save_note', data: data },
+        data: { action: 'mdn_save_note', data: data },
         success: (re) => {
             re = jQuery.parseJSON( re );
             if (re.status === 'success') {
                 $("#" + obj.contentId).html(re.content);
-                $('.wpn-markdown-content ul').each((_, el) => {
+                $('.mdn-markdown-content ul').each((_, el) => {
                     $(el).find("li").children().each((_, el) => {
                         if (el.nodeName === "INPUT") {
                             $(el).parent().parent().css({"list-style": "none", "margin-left": "0"});

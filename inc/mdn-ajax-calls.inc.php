@@ -4,8 +4,11 @@ require_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
 use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\Extension\TaskList\TaskListItemMarker;
 use League\CommonMark\MarkdownConverter;
 
 add_action( 'wp_ajax_nopriv_mdn_add_new_note', 'mdn_add_new_note' );
@@ -78,6 +81,26 @@ function mdn_save_note() {
                 Link::class => [
                     'target' => '_blank',
                 ],
+                ListBlock::class => [
+                    'class' => static function (ListBlock $ul) {
+                        foreach ($ul->children() as $x) {
+                            foreach ($x->children() as $y) {
+                                if ($y->firstChild() instanceof TaskListItemMarker){
+                                    return "mdn-has-task-list";
+                                }
+                            }
+                        }
+                    }
+                ],
+                ListItem::class => [
+                    'class' => static function (ListItem $li) {
+                        foreach ($li->children() as $ch) {
+                            if ($ch->firstChild() instanceof TaskListItemMarker) {
+                                return 'mdn-task-list-item';
+                            }
+                        }
+                    }
+                ]
             ],
             'html_input' => 'escape',
             'allow_unsafe_links' => false,
@@ -144,6 +167,26 @@ function mdn_update_note() {
             Link::class => [
                 'target' => '_blank',
             ],
+            ListBlock::class => [
+                'class' => static function (ListBlock $ul) {
+                    foreach ($ul->children() as $x) {
+                        foreach ($x->children() as $y) {
+                            if ($y->firstChild() instanceof TaskListItemMarker){
+                                return "mdn-has-task-list";
+                            }
+                        }
+                    }
+                }
+            ],
+            ListItem::class => [
+                'class' => static function (ListItem $li) {
+                    foreach ($li->children() as $ch) {
+                        if ($ch->firstChild() instanceof TaskListItemMarker) {
+                            return 'mdn-task-list-item';
+                        }
+                    }
+                }
+            ]
         ],
         'html_input' => 'escape',
         'allow_unsafe_links' => false,

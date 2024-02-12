@@ -16,8 +16,11 @@ if ( ! is_admin() ) return; // Only load plugin when user is in admin
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
 use League\CommonMark\Extension\DefaultAttributes\DefaultAttributesExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\Extension\TaskList\TaskListItemMarker;
 use League\CommonMark\MarkdownConverter;
 
 add_action( 'admin_init', 'mdn_admin_init' );
@@ -101,6 +104,29 @@ function mdn_render_dashboard_widget($_, $args) {
             Link::class => [
                 'target' => '_blank',
             ],
+            ListBlock::class => [
+                'class' => static function (ListBlock $ul) {
+                    foreach ($ul->children() as $x) {
+                        foreach ($x->children() as $y) {
+                            if ($y->firstChild() instanceof TaskListItemMarker){
+                                return "mdn-has-task-list";
+                            }
+                        }
+                    }
+                }
+            ],
+            ListItem::class => [
+                'class' => static function (ListItem $li) {
+                    foreach ($li->children() as $ch) {
+                        if ($ch->firstChild() instanceof TaskListItemMarker) {
+                            echo "<pre>";
+                            var_dump($ch->firstChild()->data);
+                            echo "</pre>";
+                            return 'mdn-task-list-item';
+                        }
+                    }
+                }
+            ]
         ],
         'html_input' => 'escape',
         'allow_unsafe_links' => false,

@@ -1,6 +1,28 @@
 div.mdn-markdown-content ul {
-    list-style: disc;
-    margin-left: 2em;
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+    padding-left: 2em;
+}
+
+.div.mdn-markdown-content ul.mdn-has-task-list {
+    position: relative;
+}
+
+div.mdn-markdown-content ul li.mdn-task-list-item {
+    display: list-item;
+    pointer-events: none;
+    list-style-type: none;
+    text-align: -webkit-match-parent;
+}
+
+div.mdn-markdown-content ul li.mdn-task-list-item input {
+    margin: 0 0.2em 0.25em -1.6em;
+    vertical-align: middle;
 }
 
 .mdn-text-muted {

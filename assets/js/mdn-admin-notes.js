@@ -1,4 +1,5 @@
 jQuery(document).ready(($) => {
+    mdn_handle_checkboxes($);
     $( document.body ).on( 'click', '.mdn-notes-add-note, #mdn-notes-add a', (e) => {
         $.ajax({
             url: ajaxurl,
@@ -41,6 +42,17 @@ jQuery(document).ready(($) => {
     mdn_init_delete_listeners($);
 });
 
+function mdn_handle_checkboxes($) {
+    $('.mdn-markdown-content ul').each((_, el) => {
+        $(el).find("li").children().each((_, el) => {
+            if (el.nodeName === "INPUT") {
+                el.disabled = false;
+                return;
+            }
+        });
+    });
+}
+
 function mdn_save_handler($, obj) {
     const data = obj;
     $.ajax({
@@ -53,16 +65,7 @@ function mdn_save_handler($, obj) {
                 $("#" + obj.contentId).html(re.content);
                 mdn_revoke_edit_listeners($);
                 mdn_revoke_delete_listeners($);
-                $('.mdn-markdown-content ul').each((_, el) => {
-                    $(el).find("li").children().each((_, el) => {
-                        if (el.nodeName === "INPUT") {
-                            $(el).parent().parent().css({"list-style": "none", "margin-left": "0"});
-                            $(el).css({"pointer-events": "none"});
-                            el.disabled = false;
-                            return;
-                        }
-                    });
-                });
+                mdn_handle_checkboxes($);
             } else if (re.status === 'large_content') {
                 alert("Content exceeded ... Max. 2500 characters");
                 $("#" + obj.textContentId).prop("disabled", false);
@@ -158,6 +161,7 @@ function mdn_handle_update_state($, noteId) {
                                 $(title).next().show();
                                 mdn_revoke_edit_listeners($);
                                 mdn_revoke_delete_listeners($);
+                                mdn_handle_checkboxes($);
                             }
                         });
                     }

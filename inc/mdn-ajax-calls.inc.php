@@ -33,7 +33,7 @@ function mdn_add_new_note() {
             <div class="mdn-markdown-header-flex-end">
                 <div>Press <code>CTRL</code> + <code>ENTER</code> to save</div>
             </div>
-            <textarea id="<?= $text_content_id ?>" rows="8" placeholder="Write your Markdown here ..." style="width: 100%;"></textarea>
+            <textarea id="<?= $text_content_id ?>" rows="8" placeholder="Write your Markdown here ..." style="width: 100%;" spellcheck="false"></textarea>
             <div class="mdn-markdown-footer-space-between">
                 <div>Learn more about <a href="https://commonmark.org/help/" target="_blank"><b>Markdown</b></a>.</div>
                 <div class="mdn-text-muted"><span id="<?= $text_count_id ?>">0</span> / 5000</div>

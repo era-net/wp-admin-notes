@@ -41,8 +41,8 @@ function mdn_admin_init() {
 
 add_action( 'admin_enqueue_scripts', 'mdn_enqueue_admin_scripts' );
 function mdn_enqueue_admin_scripts() {
-    wp_enqueue_style('mdn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/mdn-admin-notes.css');
-    wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.js', ['jquery'], '', true);
+    wp_enqueue_style('mdn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/mdn-admin-notes.min.css');
+    wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.min.js', ['jquery'], '', true);
 }
 
 // add a link to the WP Toolbar

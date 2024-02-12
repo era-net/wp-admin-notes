@@ -51,6 +51,8 @@ function mdn_save_handler($, obj) {
             re = jQuery.parseJSON( re );
             if (re.status === 'success') {
                 $("#" + obj.contentId).html(re.content);
+                mdn_revoke_edit_listeners($);
+                mdn_revoke_delete_listeners($);
                 $('.mdn-markdown-content ul').each((_, el) => {
                     $(el).find("li").children().each((_, el) => {
                         if (el.nodeName === "INPUT") {
@@ -61,7 +63,6 @@ function mdn_save_handler($, obj) {
                         }
                     });
                 });
-                mdn_init_delete_single_listener($, data);
             } else if (re.status === 'large_content') {
                 alert("Content exceeded ... Max. 2500 characters");
                 $("#" + obj.textContentId).prop("disabled", false);
@@ -76,7 +77,7 @@ function mdn_init_edit_listeners($) {
         $(el).on("click", () => {
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
-            mdn_handle_update_state($, noteId, el);
+            mdn_handle_update_state($, noteId);
             return;
         });
     });
@@ -102,7 +103,6 @@ function mdn_revoke_edit_listeners($) {
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
             mdn_handle_update_state($, noteId, el);
-            return;
         });
     });
     $('div[id^="mdn_note_"]').each((_, el) => {
@@ -114,7 +114,7 @@ function mdn_revoke_edit_listeners($) {
     });
 }
 
-function mdn_handle_update_state($, noteId, edit_btn=null) {
+function mdn_handle_update_state($, noteId) {
     const widget = $("#mdn_note_" + noteId);
     const title = $(widget).find("h2:first");
     const formBody = $(widget).find("div.inside:first");
@@ -209,33 +209,6 @@ function mdn_handle_update_state($, noteId, edit_btn=null) {
     });
     $(input).on("dblclick", (e) => {
         e.stopPropagation();
-    });
-}
-
-function mdn_init_delete_single_listener($, obj) {
-    let deleteButton = $("#" + obj.widgetId).find('button[data-name="mdn-note-delete"]')
-    $(deleteButton).on("click", () => {
-        $(deleteButton).prop("disabled", true);
-        const noteId = obj.noteId;
-        const noteTitle = $("#" + obj.titleId).text();
-        if (confirm('Sure to delete "' + noteTitle + '"?') == true) {
-            $.ajax({
-                url: ajaxurl,
-                method: "POST",
-                data: {action: 'mdn_delete_note', noteId: noteId},
-                success: (re) => {
-                    re = jQuery.parseJSON( re );
-                    if (re.status === "success") {
-                        $("#" + obj.widgetId).remove();
-                    } else {
-                        $(deleteButton).prop("disabled", false);
-                    }
-                }
-            });
-        } else {
-            $(deleteButton).prop("disabled", false);
-            return;
-        }
     });
 }
 

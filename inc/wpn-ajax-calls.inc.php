@@ -13,7 +13,7 @@ add_action( 'wp_ajax_wpn_add_new_note', 'wpn_add_new_note' );
 function wpn_add_new_note() {
     global $wpdb;
 
-    $table_name = $wpdb->prefix . 'posts'; // THIS IS HARDCODED! Table prefix needs to be grabbed from somewhere
+    $table_name = $wpdb->prefix . 'posts';
     $last_post = $wpdb->get_results("SELECT * FROM $table_name ORDER BY ID DESC LIMIT 1")[0];
 
     $note_id = absint($last_post->ID + 1);
@@ -30,7 +30,7 @@ function wpn_add_new_note() {
             <h2 id="<?= $title_id ?>" class="hndle" contenteditable="true">New Note</h2>
         </div>
         <div id="<?= $content_id ?>" class="inside">
-            <div class="mdn-markdwon-header-flex-end">
+            <div class="mdn-markdown-header-flex-end">
                 <div>Press <code>CTRL</code> + <code>ENTER</code> to save</div>
             </div>
             <textarea id="<?= $text_content_id ?>" rows="8" placeholder="Write your Markdown here ..." style="width: 100%;"></textarea>
@@ -122,22 +122,93 @@ function wpn_save_note() {
 add_action( 'wp_ajax_nopriv_mdn_update_note', 'mdn_update_note' );
 add_action( 'wp_ajax_mdn_update_note', 'mdn_update_note' );
 function mdn_update_note() {
+    $id = absint($_POST["id"]);
 
-    $post_id = absint($_POST["id"]);
-
-    if (get_post_type($post_id) != 'mdn_note') {
+    if (get_post_type($id) != 'mdn_note') {
         die();
     }
 
+    $title = sanitize_text_field( $_POST["title"] );
+    $content = sanitize_textarea_field( $_POST["content"] );
+
     $post = [
-        'ID' => $post_id,
-        'post_title' => sanitize_text_field( $_POST["title"] )
+        'ID' => $id,
+        'post_title' => $title,
+        'post_content' => $content
     ];
 
     wp_update_post($post);
 
+    $env_config = [
+        'default_attributes' => [
+            Link::class => [
+                'target' => '_blank',
+            ],
+        ],
+        'html_input' => 'escape',
+        'allow_unsafe_links' => false,
+        'max_nesting_level' => 12,
+        'renderer' => [
+            "soft_break" => "</br>"
+        ],
+    ];
+
+    $env = new Environment($env_config);
+    $env->addExtension(new CommonMarkCoreExtension());
+    $env->addExtension(new DefaultAttributesExtension());
+    $env->addExtension(new GithubFlavoredMarkdownExtension());
+
+    $converter = new MarkdownConverter($env);
+    $html = $converter->convert($content)->getContent();
+
+    ob_start(); ?>
+
+    <div class="wpn-markdown-content">
+        <?= $html ?>
+    </div>
+    <div class="mdn-markdown-footer-flex-end">
+        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $id ?>">delete</button></div>
+        <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $id ?>">edit</button></div>
+    </div>
+
+    <?php
     $rsp = [
-        "status" => "success"
+        "status" => "success",
+        "content" => ob_get_clean()
+    ];
+
+    echo json_encode($rsp);
+    die();
+}
+
+add_action( 'wp_ajax_nopriv_mdn_update_form_content', 'mdn_update_form_content' );
+add_action( 'wp_ajax_mdn_update_form_content', 'mdn_update_form_content' );
+function mdn_update_form_content() {
+    $id = absint($_POST["id"]);
+
+    $post = get_post($id);
+    $content = $post->post_content;
+
+    $text_content_id = "wpn_note_update_text_content_" . $id;
+    $text_count_id = "mdn_note_update_text_count_" . $id;
+
+    ob_start(); ?>
+
+    <div class="mdn-markdown-header-flex-end">
+        <div>Press <code>CTRL</code> + <code>ENTER</code> to save</div>
+    </div>
+    <textarea id="<?= $text_content_id ?>" rows="8" placeholder="Write your Markdown here ..." style="width: 100%;" spellcheck="false"><?= $content ?></textarea>
+    <div class="mdn-markdown-footer-space-between">
+        <div>Learn more about <a href="https://commonmark.org/help/" target="_blank"><b>Markdown</b></a>.</div>
+        <div class="mdn-text-muted"><span id="<?= $text_count_id ?>"><?= strlen($content); ?></span> / 5000</div>
+    </div>
+
+    <?php
+    $rsp = [
+        "status" => "success",
+        "textContentId" => $text_content_id,
+        "textCountId" => $text_count_id,
+        "html" => ob_get_clean()
     ];
 
     echo json_encode($rsp);

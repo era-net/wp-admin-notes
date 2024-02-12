@@ -7,7 +7,7 @@ div.wpn-markdown-content ul {
     color: #646970;
 }
 
-.mdn-markdwon-header-flex-end {
+.mdn-markdown-header-flex-end {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 4px;

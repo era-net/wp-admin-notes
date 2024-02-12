@@ -16,7 +16,7 @@ jQuery(document).ready(($) => {
                         delete re.note;
                         wpn_save_handler($, re);
                     }
-                    if(e.keyCode==9 || e.which==9) {
+                    if (e.keyCode==9 || e.which==9) {
                         let textarea = document.getElementById(re.textContentId);
                         e.preventDefault();
                         textarea.setRangeText(
@@ -89,49 +89,126 @@ function mdn_init_edit_listeners($) {
     });
 }
 
+function mdn_revoke_edit_listeners($) {
+    $('button[data-name="mdn-note-edit"]').each((_, el) => {
+        $(el).off("click");
+    });
+    $('div[id^="mdn_note_"]').each((_, el) => {
+        $(el).off("dblclick");
+    });
+
+    $('button[data-name="mdn-note-edit"]').each((_, el) => {
+        $(el).on("click", () => {
+            $(el).prop("disabled", true);
+            const noteId = $(el).data("note-id");
+            mdn_handle_update_state($, noteId, el);
+            return;
+        });
+    });
+    $('div[id^="mdn_note_"]').each((_, el) => {
+        $(el).on("dblclick", () => {
+            const split = el.id.split("_");
+            const noteId = split[split.length-1];
+            mdn_handle_update_state($, noteId);
+        });
+    });
+}
+
 function mdn_handle_update_state($, noteId, edit_btn=null) {
     const widget = $("#mdn_note_" + noteId);
     const title = $(widget).find("h2:first");
+    const formBody = $(widget).find("div.inside:first");
     const prevTitle = $(title).text();
     $(title).removeClass("hndle ui-sortable-handle");
     $(title).addClass("mdn-header-edit-state");
     const titleText = $(title).text();
-    $(title).html("");
     const input = document.createElement("input");
     input.type = "text";
     input.value = titleText;
-    $(title).append(input);
-    $(title).next().hide();
+    
+    $.ajax({
+        url: ajaxurl,
+        method: "POST",
+        data: {action: 'mdn_update_form_content', id: noteId},
+        success: (re) => {
+            $(title).html("");
+            $(formBody).html("");
+            re = jQuery.parseJSON( re );
+            if (re.status === 'success') {
+                $(title).append(input);
+                $(title).next().hide();
+                formBody.append(re.html);
+                const textArea = $('#' + re.textContentId);
+                $(textArea).on("keydown", (e) => {
+                    if (e.ctrlKey && e.keyCode == 13) {
+                        $("#" + re.textContentId).prop("disabled", true);
+                        $("#" + re.textContentId).trigger("blur");
+                        $.ajax({
+                            url: ajaxurl,
+                            method: "POST",
+                            data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
+                            success: (re) => {
+                                formBody.html("");
+                                re = jQuery.parseJSON( re );
+                                formBody.html(re.content);
+                                $(input).hide();
+                                $(title).text($(input).val());
+                                $(input).remove();
+                                $(title).addClass("hndle ui-sortable-handle");
+                                $(title).next().show();
+                                mdn_revoke_edit_listeners($);
+                                mdn_revoke_delete_listeners($);
+                            }
+                        });
+                    }
+                    if (e.keyCode==9 || e.which==9) {
+                        let textarea = document.getElementById(re.textContentId);
+                        e.preventDefault();
+                        textarea.setRangeText(
+                            '\t',
+                            textarea.selectionStart,
+                            textarea.selectionStart,
+                            'end'
+                        );
+                    }
+                });
+                $(input).on("keydown", (e) => {
+                    if (e.ctrlKey && e.keyCode == 13) {
+                        $(input).prop("disabled", true);
+                        $(input).trigger("blur");
+                        $(textArea).prop("disabled", true);
+                        $.ajax({
+                            url: ajaxurl,
+                            method: "POST",
+                            data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
+                            success: (re) => {
+                                formBody.html("");
+                                re = jQuery.parseJSON( re );
+                                formBody.html(re.content);
+                                $(input).hide();
+                                $(title).text($(input).val());
+                                $(input).remove();
+                                $(title).addClass("hndle ui-sortable-handle");
+                                $(title).next().show();
+                                mdn_revoke_edit_listeners($);
+                                mdn_revoke_delete_listeners($);
+                            }
+                        });
+                    }
+                });
+                // update charcount on keyup
+                $(textArea).on("keyup", () => {
+                    $("#" + re.textCountId).text($("#" + re.textContentId).val().length);
+                });
+            }
+        }
+    });
+
     $(input).on("click", (e) => {
         e.stopPropagation();
     });
     $(input).on("dblclick", (e) => {
         e.stopPropagation();
-    });
-    $(input).on("blur keydown", (e) => {
-        if (e.type == "blur" || e.type == "keydown" && e.keyCode == 13) {
-            $(input).hide();
-            $(title).text($(input).val());
-            $(input).remove();
-            $(title).addClass("hndle ui-sortable-handle");
-            $(title).next().show();
-            if (edit_btn !== null) {
-                $(edit_btn).prop("disabled", false);
-            }
-            if (prevTitle !== $(title).text()) {
-                $.ajax({
-                    url: ajaxurl,
-                    method: "POST",
-                    data: {action: 'mdn_update_note', 'id': noteId, 'title': $(title).text()},
-                    success: (re) => {
-                        re = jQuery.parseJSON( re );
-                        if (re.status !== "success") {
-                            $(title).text(prevTitle);
-                        }
-                    }
-                });
-            }
-        }
     });
 }
 
@@ -160,6 +237,13 @@ function mdn_init_delete_single_listener($, obj) {
             return;
         }
     });
+}
+
+function mdn_revoke_delete_listeners($) {
+    $('button[data-name="mdn-note-delete"]').each((_, el) => {
+        $(el).off("click");
+    });
+    mdn_init_delete_listeners($);
 }
 
 function mdn_init_delete_listeners($) {

@@ -91,12 +91,10 @@ function mdn_init_dashboard_widgets() {
             'high'
         );
     }
-
-    // wp_add_dashboard_widget('custom_help_widget', 'Theme Support', 'mdn_render_dashboard_widget', null, null, "normal", "high");
 }
  
 function mdn_render_dashboard_widget($_, $args) {
-    require_once plugin_dir_path(__FILE__) . "vendor/autoload.php";
+    require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
     $env_config = [
         'default_attributes' => [
@@ -108,7 +106,7 @@ function mdn_render_dashboard_widget($_, $args) {
         'allow_unsafe_links' => false,
         'max_nesting_level' => 12,
         'renderer' => [
-            "soft_break" => "</br>"
+            'soft_break' => '</br>'
         ],
     ];
 

@@ -1,5 +1,5 @@
 <?php
-require_once plugin_dir_path(__FILE__) . "../vendor/autoload.php";
+require_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
 
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -14,18 +14,18 @@ function mdn_add_new_note() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'posts';
-    $last_post = $wpdb->get_results("SELECT * FROM $table_name ORDER BY ID DESC LIMIT 1")[0];
+    $last_post = $wpdb->get_results('SELECT * FROM $table_name ORDER BY ID DESC LIMIT 1')[0];
 
     $note_id = absint($last_post->ID + 1);
-    $widget_id = "mdn_note_" . $note_id;
-    $title_id = "mdn_note_title_" . $note_id;
-    $content_id = "mdn_note_content_" . $note_id;
-    $text_content_id = "mdn_note_text_content_" . $note_id;
-    $text_count_id = "mdn_note_text_count_" . $note_id;
+    $widget_id = 'mdn_note_' . $note_id;
+    $title_id = 'mdn_note_title_' . $note_id;
+    $content_id = 'mdn_note_content_' . $note_id;
+    $text_content_id = 'mdn_note_text_content_' . $note_id;
+    $text_count_id = 'mdn_note_text_count_' . $note_id;
 
     ob_start(); ?>
 
-    <div id='<?= $widget_id ?>' class='postbox'>
+    <div id="<?= $widget_id ?>" class="postbox">
         <div class="postbox-header">
             <h2 id="<?= $title_id ?>" class="hndle" contenteditable="true">New Note</h2>
         </div>
@@ -43,13 +43,13 @@ function mdn_add_new_note() {
 
     <?php
     $rsp = [
-        "noteId" => $note_id,
-        "note" => ob_get_clean(),
-        "widgetId" => $widget_id,
-        "titleId" => $title_id,
-        "contentId" => $content_id,
-        "textContentId" => $text_content_id,
-        "textCountId" => $text_count_id
+        'noteId' => $note_id,
+        'note' => ob_get_clean(),
+        'widgetId' => $widget_id,
+        'titleId' => $title_id,
+        'contentId' => $content_id,
+        'textContentId' => $text_content_id,
+        'textCountId' => $text_count_id
     ];
     echo json_encode($rsp);
     die();
@@ -58,8 +58,8 @@ function mdn_add_new_note() {
 add_action( 'wp_ajax_nopriv_mdn_save_note', 'mdn_save_note' );
 add_action( 'wp_ajax_mdn_save_note', 'mdn_save_note' );
 function mdn_save_note() {
-    $data = $_POST["data"];
-    $note_content = sanitize_textarea_field($data["textContent"]);
+    $data = $_POST['data'];
+    $note_content = sanitize_textarea_field($data['textContent']);
     $char_count = strlen($note_content);
 
     if ($char_count <= 5000) {
@@ -83,7 +83,7 @@ function mdn_save_note() {
             'allow_unsafe_links' => false,
             'max_nesting_level' => 12,
             'renderer' => [
-                "soft_break" => "</br>"
+                'soft_break' => '</br>'
             ],
         ];
 
@@ -104,14 +104,14 @@ function mdn_save_note() {
         </div>
         <?php
         $rsp = [
-            "status" => "success",
-            "content" => ob_get_clean(),
-            "charCount" => $char_count,
-            "trigger" => ($_POST["trigger"] === "undefined") ? "undefined" : $_POST["trigger"]
+            'status' => 'success',
+            'content' => ob_get_clean(),
+            'charCount' => $char_count,
+            'trigger' => ($_POST['trigger'] === 'undefined') ? 'undefined' : $_POST['trigger']
         ];
     } else {
         $rsp = [
-            "status" => "large_content"
+            'status' => 'large_content'
         ];
     }
     
@@ -122,14 +122,14 @@ function mdn_save_note() {
 add_action( 'wp_ajax_nopriv_mdn_update_note', 'mdn_update_note' );
 add_action( 'wp_ajax_mdn_update_note', 'mdn_update_note' );
 function mdn_update_note() {
-    $id = absint($_POST["id"]);
+    $id = absint($_POST['id']);
 
     if (get_post_type($id) != 'mdn_note') {
         die();
     }
 
-    $title = sanitize_text_field( $_POST["title"] );
-    $content = sanitize_textarea_field( $_POST["content"] );
+    $title = sanitize_text_field( $_POST['title'] );
+    $content = sanitize_textarea_field( $_POST['content'] );
 
     $post = [
         'ID' => $id,
@@ -149,7 +149,7 @@ function mdn_update_note() {
         'allow_unsafe_links' => false,
         'max_nesting_level' => 12,
         'renderer' => [
-            "soft_break" => "</br>"
+            'soft_break' => '</br>'
         ],
     ];
 
@@ -173,8 +173,8 @@ function mdn_update_note() {
 
     <?php
     $rsp = [
-        "status" => "success",
-        "content" => ob_get_clean()
+        'status' => 'success',
+        'content' => ob_get_clean()
     ];
 
     echo json_encode($rsp);
@@ -184,13 +184,13 @@ function mdn_update_note() {
 add_action( 'wp_ajax_nopriv_mdn_update_form_content', 'mdn_update_form_content' );
 add_action( 'wp_ajax_mdn_update_form_content', 'mdn_update_form_content' );
 function mdn_update_form_content() {
-    $id = absint($_POST["id"]);
+    $id = absint($_POST['id']);
 
     $post = get_post($id);
     $content = $post->post_content;
 
-    $text_content_id = "mdn_note_update_text_content_" . $id;
-    $text_count_id = "mdn_note_update_text_count_" . $id;
+    $text_content_id = 'mdn_note_update_text_content_' . $id;
+    $text_count_id = 'mdn_note_update_text_count_' . $id;
 
     ob_start(); ?>
 
@@ -205,10 +205,10 @@ function mdn_update_form_content() {
 
     <?php
     $rsp = [
-        "status" => "success",
-        "textContentId" => $text_content_id,
-        "textCountId" => $text_count_id,
-        "html" => ob_get_clean()
+        'status' => 'success',
+        'textContentId' => $text_content_id,
+        'textCountId' => $text_count_id,
+        'html' => ob_get_clean()
     ];
 
     echo json_encode($rsp);
@@ -218,14 +218,14 @@ function mdn_update_form_content() {
 add_action( 'wp_ajax_nopriv_mdn_delete_note', 'mdn_delete_note' );
 add_action( 'wp_ajax_mdn_delete_note', 'mdn_delete_note' );
 function mdn_delete_note() {
-    $post_id = absint($_POST["noteId"]);
+    $post_id = absint($_POST['noteId']);
     if (get_post_type($post_id) != 'mdn_note') {
         die();
     }
     wp_delete_post($post_id, true);
 
     $rsp = [
-        "status" => "success"
+        'status' => 'success'
     ];
 
     echo json_encode($rsp);

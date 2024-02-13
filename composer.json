@@ -5,7 +5,6 @@
         }
     },
     "require": {
-        "league/commonmark": "^2.4",
-        "radishconcepts/wordpress-github-plugin-updater": "dev-master"
+        "league/commonmark": "^2.4"
     }
 }

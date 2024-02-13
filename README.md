@@ -1,4 +1,4 @@
 # wp-admin-notes
 A WordPress plugin representing a handy dashboard noteblock
 
-~Current Version:1.0.5~
+~Current Version:1.0.6~

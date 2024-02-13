@@ -6,7 +6,7 @@
  * Version: 1.0.1
  * Text Domain: mdn-notes
  * Domain Path: /languages
- * Author: Ervinator
+ * Author: ERA
  * Author URI: https://era-kast.ch
  */
 
@@ -25,7 +25,10 @@ use League\CommonMark\MarkdownConverter;
 
 add_action( 'admin_init', 'mdn_admin_init' );
 function mdn_admin_init() {
+    require_once plugin_dir_path(__FILE__) . 'app/Updater.php';
     require_once plugin_dir_path(__FILE__) . 'inc/mdn-ajax-calls.inc.php';
+
+    new Updater();
 
     load_plugin_textdomain( 'mdn-notes', false, 'wp-admin-notes/languages' );
 

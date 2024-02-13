@@ -42,17 +42,6 @@ jQuery(document).ready(($) => {
     mdn_init_delete_listeners($);
 });
 
-function mdn_handle_checkboxes($) {
-    $('.mdn-markdown-content ul').each((_, el) => {
-        $(el).find("li").children().each((_, el) => {
-            if (el.nodeName === "INPUT") {
-                el.disabled = false;
-                return;
-            }
-        });
-    });
-}
-
 function mdn_save_handler($, obj) {
     const data = obj;
     $.ajax({
@@ -86,6 +75,7 @@ function mdn_init_edit_listeners($) {
     });
     $('div[id^="mdn_note_"]').each((_, el) => {
         $(el).on("dblclick", () => {
+            $(el).off("dblclick");
             const split = el.id.split("_");
             const noteId = split[split.length-1];
             mdn_handle_update_state($, noteId);
@@ -103,6 +93,9 @@ function mdn_revoke_edit_listeners($) {
 
     $('button[data-name="mdn-note-edit"]').each((_, el) => {
         $(el).on("click", () => {
+            $("#mdn_note_" + $(el).data("note-id")).off("dblclick");
+            $("#mdn_note_content_" + $(el).data("note-id")).off("dblclick");
+            $("#mdn_note_update_text_content_" + $(el).data("note-id")).off("dblclick");
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
             mdn_handle_update_state($, noteId, el);
@@ -110,6 +103,7 @@ function mdn_revoke_edit_listeners($) {
     });
     $('div[id^="mdn_note_"]').each((_, el) => {
         $(el).on("dblclick", () => {
+            $(el).off("dblclick");
             const split = el.id.split("_");
             const noteId = split[split.length-1];
             mdn_handle_update_state($, noteId);
@@ -119,6 +113,7 @@ function mdn_revoke_edit_listeners($) {
 
 function mdn_handle_update_state($, noteId) {
     const widget = $("#mdn_note_" + noteId);
+    $(widget).off("dblclick");
     const title = $(widget).find("h2:first");
     const formBody = $(widget).find("div.inside:first");
     const prevTitle = $(title).text();
@@ -142,6 +137,7 @@ function mdn_handle_update_state($, noteId) {
                 $(title).next().hide();
                 formBody.append(re.html);
                 const textArea = $('#' + re.textContentId);
+                $(textArea).off("dblclick");
                 $(textArea).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
                         $("#" + re.textContentId).prop("disabled", true);
@@ -245,6 +241,17 @@ function mdn_init_delete_listeners($) {
                 });
             } else {
                 $(el).prop("disabled", false);
+                return;
+            }
+        });
+    });
+}
+
+function mdn_handle_checkboxes($) {
+    $('.mdn-markdown-content ul').each((_, el) => {
+        $(el).find("li").children().each((_, el) => {
+            if (el.nodeName === "INPUT") {
+                el.disabled = false;
                 return;
             }
         });

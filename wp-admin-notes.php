@@ -119,9 +119,6 @@ function mdn_render_dashboard_widget($_, $args) {
                 'class' => static function (ListItem $li) {
                     foreach ($li->children() as $ch) {
                         if ($ch->firstChild() instanceof TaskListItemMarker) {
-                            echo "<pre>";
-                            var_dump($ch->firstChild()->data);
-                            echo "</pre>";
                             return 'mdn-task-list-item';
                         }
                     }

@@ -17,9 +17,10 @@ function mdn_add_new_note() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'posts';
-    $last_post = $wpdb->get_results("SELECT * FROM $table_name ORDER BY ID DESC LIMIT 1")[0];
+    $get_id = $wpdb->get_row("SHOW TABLE STATUS LIKE '$table_name'"); 
+    $next_id = $get_id->Auto_increment;
 
-    $note_id = absint($last_post->ID + 1);
+    $note_id = absint($next_id);
     $widget_id = 'mdn_note_' . $note_id;
     $title_id = 'mdn_note_title_' . $note_id;
     $content_id = 'mdn_note_content_' . $note_id;
@@ -30,7 +31,7 @@ function mdn_add_new_note() {
 
     <div id="<?= $widget_id ?>" class="postbox">
         <div class="postbox-header">
-            <h2 id="<?= $title_id ?>" class="hndle" contenteditable="true">New Note</h2>
+            <h2 id="<?= $title_id ?>" class="hndle">New Note</h2>
         </div>
         <div id="<?= $content_id ?>" class="inside">
             <div class="mdn-markdown-header-flex-end">
@@ -52,7 +53,7 @@ function mdn_add_new_note() {
         'titleId' => $title_id,
         'contentId' => $content_id,
         'textContentId' => $text_content_id,
-        'textCountId' => $text_count_id
+        'textCountId' => $text_count_id,
     ];
     echo json_encode($rsp);
     die();

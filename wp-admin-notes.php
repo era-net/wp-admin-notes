@@ -25,25 +25,7 @@ use League\CommonMark\MarkdownConverter;
 
 add_action( 'admin_init', 'mdn_admin_init' );
 function mdn_admin_init() {
-    require_once plugin_dir_path(__FILE__) . 'vendor/radishconcepts/wordpress-github-plugin-updater/updater.php';
     require_once plugin_dir_path(__FILE__) . 'inc/mdn-ajax-calls.inc.php';
-
-    // Check for updates via github
-    $config = [
-        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-        'proper_folder_name' => 'wp-admin-notes', // this is the name of the folder your plugin lives in
-        'api_url' => 'https://api.github.com/repos/era-net/wp-admin-notes', // the GitHub API url of your GitHub repo
-        'raw_url' => 'https://raw.github.com/era-net/wp-admin-notes/master', // the GitHub raw url of your GitHub repo
-        'github_url' => 'https://github.com/era-net/wp-admin-notes', // the GitHub url of your GitHub repo
-        'zip_url' => 'https://github.com/username/repository-name/zipball/master', // the zip url of the GitHub repo
-        'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-        'requires' => '6.0', // which version of WordPress does your plugin require?
-        'tested' => '6.4', // which version of WordPress is your plugin tested up to?
-        'readme' => 'README.md', // which file to use as the readme for the version number
-        'access_token' => '', // Access private repositories by authorizing under Plugins > GitHub Updates when this example plugin is installed
-    ];
-
-    new WP_GitHub_Updater($config);
 
     load_plugin_textdomain( 'mdn-notes', false, 'wp-admin-notes/languages' );
 

@@ -3,7 +3,7 @@
  * Plugin Name: WPAdmin Notes
  * Plugin URI: https://github.com/era-net/wp-admin-notes
  * Description: A handy markdown note block for your admin panel.
- * Version: 1.0.6
+ * Version: 1.1.0
  * Text Domain: mdn-notes
  * Domain Path: /languages
  * Author: Ervinator

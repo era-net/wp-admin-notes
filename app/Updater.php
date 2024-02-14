@@ -26,7 +26,7 @@ class Updater {
 
         if( false === $remote || ! $this->cache_allowed ) {
 
-            $remote = wp_remote_get( 'http://localhost/wp-testing/wp-content/plugins/wp-admin-notes/wp-admin-notes.json', [
+            $remote = wp_remote_get( 'https://era-kast.ch/updater/wp-admin-notes.php', [
                     'timeout' => 10,
                     'headers' => [
                         'Accept' => 'application/json'

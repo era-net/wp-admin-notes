@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: WPAdmin Notes
+ * Plugin URI: https://era-kast.ch
  * Description: A handy markdown note block for your admin panel.
  * Version: 1.0.2
  * Text Domain: mdn-notes
@@ -24,12 +25,7 @@ use League\CommonMark\MarkdownConverter;
 
 add_action( 'admin_init', 'mdn_admin_init' );
 function mdn_admin_init() {
-    require_once plugin_dir_path(__FILE__) . 'app/Updater.php';
     require_once plugin_dir_path(__FILE__) . 'inc/mdn-ajax-calls.inc.php';
-
-    $pd = get_plugin_data(__FILE__);
-
-    new Updater($pd["Version"]);
 
     load_plugin_textdomain( 'mdn-notes', false, 'wp-admin-notes/languages' );
 
@@ -49,11 +45,16 @@ function mdn_admin_init() {
 
 add_action( 'admin_enqueue_scripts', 'mdn_enqueue_admin_scripts' );
 function mdn_enqueue_admin_scripts() {
-    wp_enqueue_style('mdn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/mdn-admin-notes.min.css');
-    wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.min.js', ['jquery'], '', true);
+    $screen = get_current_screen();
+    // The styles and scripts are only needed in the dashboard
+    if ($screen->id == "dashboard") {
+        wp_enqueue_style('mdn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/mdn-admin-notes.min.css');
+        wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.min.js', ['jquery'], '', true);
+    }
 }
 
 // add a link to the WP Toolbar
+add_action('admin_bar_menu', 'mdn_custom_toolbar_link', 9998);
 function mdn_custom_toolbar_link($wp_admin_bar) {
     $screen = get_current_screen();
 
@@ -73,7 +74,6 @@ function mdn_custom_toolbar_link($wp_admin_bar) {
     );
     $wp_admin_bar->add_node($args);
 }
-add_action('admin_bar_menu', 'mdn_custom_toolbar_link', 9998);
 
 /**
  * RENDER DASHBOARD WIDGETS
@@ -161,4 +161,53 @@ function mdn_render_dashboard_widget($_, $args) {
 
     <?php
     echo ob_get_clean();
+}
+
+/**
+ * CHECK FOR UPDATES AND LETS THE USER UPDATE IF UPDATES ARE AVAILABLE
+ * Checks for updates and displays a notice if updates are available.
+ * If user is in the update-core.php or plugins.php page update is triggered.
+ */
+add_action('current_screen', 'mdn_check_for_updates');
+function mdn_check_for_updates() {
+    require_once plugin_dir_path(__FILE__) . 'app/Updater.php';
+    $pd = get_plugin_data(__FILE__);
+    $version = $pd["Version"];
+
+    $current = "mdn_version";
+
+    if (!get_option($current)) {
+        update_option($current, $version);
+    } else {
+        // check if option exists
+        $new = "mdn_latest";
+        if (get_option($new)) {
+            // compare versions
+            if (get_option($current) !== get_option($new)) {
+                $screen = get_current_screen();
+                // show a notice
+                add_action('admin_notices', 'mdn_show_update_notice');
+                // trigger updater in plugins.php and update-core.php if there is an update
+                if ($screen->id == "plugins" || $screen->id == "update-core") {
+                    new Updater($version);
+                }
+            }
+        }
+    }
+}
+
+function mdn_show_update_notice() {
+    $screen = get_current_screen();
+    if ($screen->id == "plugins" || $screen->id == "update-core") {
+        return;
+    }
+    ?>
+    <div class="notice notice-warning">
+        <p><strong>WPAdmin Notes</strong> released an update!</p>
+        <p>
+            <a href="https://github.com/era-net/wp-admin-notes/releases/latest" target="_blank">Check it out</a> or 
+            <a href="<?= esc_url(admin_url() . 'plugins.php') ?>"> <strong>Update Now</strong></a>!
+        </p>
+    </div>
+    <?php
 }

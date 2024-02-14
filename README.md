@@ -1,2 +1,2 @@
 # wp-admin-notes
-A WordPress plugin representing a handy dashboard noteblock
+A handy markdown noteblock for your Wordpress admin panel

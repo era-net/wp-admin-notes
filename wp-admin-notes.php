@@ -1,17 +1,18 @@
 <?php
 /**
  * Plugin Name: WPAdmin Notes
- * Plugin URI: https://github.com/era-net/wp-admin-notes
  * Description: A handy markdown note block for your admin panel.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Text Domain: mdn-notes
  * Domain Path: /languages
- * Author: Ervinator
+ * Author: ERA
  * Author URI: https://era-kast.ch
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! is_admin() ) return; // Only load plugin when user is in admin
+require_once plugin_dir_path(__FILE__) . 'app/Updater.php';
+new Updater();
 
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;

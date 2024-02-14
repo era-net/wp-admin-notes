@@ -11,8 +11,6 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! is_admin() ) return; // Only load plugin when user is in admin
-require_once plugin_dir_path(__FILE__) . 'app/Updater.php';
-new Updater();
 
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -26,7 +24,12 @@ use League\CommonMark\MarkdownConverter;
 
 add_action( 'admin_init', 'mdn_admin_init' );
 function mdn_admin_init() {
+    require_once plugin_dir_path(__FILE__) . 'app/Updater.php';
     require_once plugin_dir_path(__FILE__) . 'inc/mdn-ajax-calls.inc.php';
+
+    $pd = get_plugin_data(__FILE__);
+
+    new Updater($pd["Version"]);
 
     load_plugin_textdomain( 'mdn-notes', false, 'wp-admin-notes/languages' );
 

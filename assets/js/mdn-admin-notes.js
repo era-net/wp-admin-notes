@@ -1,4 +1,5 @@
 jQuery(document).ready(($) => {
+    check_version($);
     mdn_handle_checkboxes($);
     $( document.body ).on( 'click', '.mdn-notes-add-note, #mdn-notes-add a', (e) => {
         $.ajax({
@@ -6,7 +7,6 @@ jQuery(document).ready(($) => {
             method: "POST",
             data: { action: 'mdn_add_new_note' },
             success: (re) => {
-                re = jQuery.parseJSON( re );
                 $("#normal-sortables").prepend(re.note);
                 $("#" + re.textContentId).trigger("focus");
                 $("#" + re.textContentId).on("keydown", (e) => {
@@ -42,6 +42,14 @@ jQuery(document).ready(($) => {
     mdn_init_delete_listeners($);
 });
 
+function check_version($) {
+    $.ajax({
+        url: ajaxurl,
+        method: "POST",
+        data: {action: "update_version"}
+    });
+}
+
 function mdn_save_handler($, obj) {
     const data = obj;
     $.ajax({
@@ -49,7 +57,6 @@ function mdn_save_handler($, obj) {
         method: "POST",
         data: { action: 'mdn_save_note', data: data },
         success: (re) => {
-            re = jQuery.parseJSON( re );
             if (re.status === 'success') {
                 $("#" + obj.contentId).html(re.content);
                 mdn_revoke_edit_listeners($);
@@ -131,7 +138,6 @@ function mdn_handle_update_state($, noteId) {
         success: (re) => {
             $(title).html("");
             $(formBody).html("");
-            re = jQuery.parseJSON( re );
             if (re.status === 'success') {
                 $(title).append(input);
                 $(title).next().hide();
@@ -148,7 +154,6 @@ function mdn_handle_update_state($, noteId) {
                             data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
                             success: (re) => {
                                 formBody.html("");
-                                re = jQuery.parseJSON( re );
                                 formBody.html(re.content);
                                 $(input).hide();
                                 $(title).text($(input).val());
@@ -183,7 +188,6 @@ function mdn_handle_update_state($, noteId) {
                             data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
                             success: (re) => {
                                 formBody.html("");
-                                re = jQuery.parseJSON( re );
                                 formBody.html(re.content);
                                 $(input).hide();
                                 $(title).text($(input).val());
@@ -231,7 +235,6 @@ function mdn_init_delete_listeners($) {
                     method: "POST",
                     data: {action: 'mdn_delete_note', noteId: noteId},
                     success: (re) => {
-                        re = jQuery.parseJSON( re );
                         if (re.status === "success") {
                             $("#mdn_note_" + $(el).data("note-id")).remove();
                         } else {

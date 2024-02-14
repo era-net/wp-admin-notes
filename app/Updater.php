@@ -43,6 +43,9 @@ class Updater {
         }
 
         $remote = json_decode( wp_remote_retrieve_body( $remote ) );
+
+        // update the current version to prevent the notice from showing
+        update_option("mdn_version", $remote->version);
         
         return $remote;
 

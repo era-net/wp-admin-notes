@@ -1,4 +1,5 @@
 <?php
+header("Content-Type: application/json");
 require_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
 
 use League\CommonMark\Environment\Environment;
@@ -53,7 +54,7 @@ function mdn_add_new_note() {
         'titleId' => $title_id,
         'contentId' => $content_id,
         'textContentId' => $text_content_id,
-        'textCountId' => $text_count_id,
+        'textCountId' => $text_count_id
     ];
     echo json_encode($rsp);
     die();
@@ -273,5 +274,33 @@ function mdn_delete_note() {
     ];
 
     echo json_encode($rsp);
+    die();
+}
+
+/**
+ * UPDATE NEWEST VERSION
+ * Any time a user visits the dashboard the database option
+ * 'mdn_latest' is updated to the latest version.
+ */
+add_action( 'wp_ajax_nopriv_update_version', 'update_version' );
+add_action( 'wp_ajax_update_version', 'update_version' );
+function update_version() {
+    $url = "https://era-kast.ch/updater/wp-admin-notes.php";
+
+    $curl = curl_init($url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    $rsp = json_decode($response, true);
+
+    update_option("mdn_latest", $rsp["version"]);
+
+    $succ = [
+        'status' => "success"
+    ];
+
+    echo json_encode($succ);
     die();
 }

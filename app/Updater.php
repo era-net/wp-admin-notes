@@ -7,10 +7,10 @@ class Updater {
     public $cache_key;
     public $cache_allowed;
 
-    public function __construct() {
+    public function __construct($version) {
 
         $this->plugin_slug   = dirname ( plugin_basename( __DIR__ ) );
-        $this->version       = '1.0';
+        $this->version       = $version;
         $this->cache_key     = 'mdn_admin_upd';
         $this->cache_allowed = false;
 

@@ -58,6 +58,9 @@ function mdn_enqueue_admin_scripts() {
         wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.min.js', ['jquery'], '', true);
     }
 
+    // Skipping releases
+    wp_enqueue_script('mdn-admin-skip-release', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-skip-release.min.js', ['jquery'], '', true);
+
 }
 
 // add a link to the WP Toolbar
@@ -173,7 +176,6 @@ function mdn_render_dashboard_widget($_, $args) {
 /**
  * CHECK FOR UPDATES AND LETS THE USER UPDATE IF UPDATES ARE AVAILABLE
  * Checks for updates and displays a notice if updates are available.
- * If user is in the update-core.php or plugins.php page update is triggered.
  */
 add_action('current_screen', 'mdn_check_for_updates');
 function mdn_check_for_updates() {
@@ -186,6 +188,11 @@ function mdn_check_for_updates() {
     $new = "mdn_latest";
     // check if option exists
     if (get_option($new)) {
+        $skip = "mdn_release_skip";
+        // do not trigger notice if user skipped this release
+        if (get_option($new) === get_option($skip)) {
+            return;
+        }
         // compare versions
         if (get_option($current) !== get_option($new)) {
             // show a notice
@@ -199,19 +206,19 @@ function mdn_show_update_notice() {
     // do not show during the updating process
     if ($screen->id !== "update") {
         ?>
-        <div class="notice notice-warning">
+        <div id="mdn-admin-update-notice" class="notice notice-warning">
             
                 <?php
                 if ($screen->id == "plugin-install") {
                     echo '<p><strong>WPAdmin Notes • <a href="https://github.com/era-net/wp-admin-notes/releases/latest" target="_blank">v' . get_option("mdn_latest") . '</a></strong></p>';
-                    echo '<a href="https://github.com/era-net/wp-admin-notes/releases/latest/download/wp-admin-notes.zip" class="button button-primary">wp-admin-notes.zip</a> ';
+                    echo '<a href="https://github.com/era-net/wp-admin-notes/releases/latest/download/wp-admin-notes.zip" class="button button-primary">wp-admin-notes.zip • v' . get_option("mdn_latest") . '</a> ';
                     echo '<div style="margin-top: 0.5em; padding-top: 2px;"></div>';
                 } else {
                     ?>
                         <h3>WPAdmin Notes <small>just released an update</small></h3>
                         <p>
                             <a href="<?= esc_url( admin_url() . 'plugin-install.php?tab=upload' ) ?>" class="button button-primary"> <strong>Update Now</strong>!</a> 
-                            <button class="button button-secondary">skip this release</button>
+                            <button id="mdn-skip-release" class="button button-secondary">skip this release</button>
                             <div>
                                 <a href="#">Need help updating?</a> | 
                                 <a href="https://github.com/era-net/wp-admin-notes/releases/latest" target="_blank"><strong><?= get_option("mdn_latest") ?></strong></a>

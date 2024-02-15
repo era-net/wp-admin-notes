@@ -304,3 +304,22 @@ function update_version() {
     echo json_encode($succ);
     die();
 }
+
+/**
+ * SKIP RELEASE
+ * When a user clicks and confirms the skip release button
+ */
+add_action( 'wp_ajax_nopriv_mdn_skip_release', 'mdn_skip_release' );
+add_action( 'wp_ajax_mdn_skip_release', 'mdn_skip_release' );
+function mdn_skip_release() {
+    $latest = get_option("mdn_latest");
+
+    update_option("mdn_release_skip", $latest);
+
+    $succ = [
+        'status' => "success"
+    ];
+
+    echo json_encode($succ);
+    die();
+}

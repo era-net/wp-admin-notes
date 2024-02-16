@@ -3,7 +3,7 @@
  * Plugin Name:       WPAdmin Notes
  * Plugin URI:        https://github.com/era-net/wp-admin-notes
  * Description:       A handy markdown note block for your admin panel.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            ERA
@@ -75,7 +75,7 @@ function mdn_custom_toolbar_link($wp_admin_bar) {
     $args = array(
         'id' => 'mdn-notes-add',
         'parent' => 'top-secondary',
-        'title' => '+ Add new Note', 
+        'title' => '+ ' . __( 'New Note', 'mdn-notes' ), 
         'href' => 'javascript:void(0);',
         'meta' => array(
             'class' => 'mdn-notes-add-note', 
@@ -165,8 +165,8 @@ function mdn_render_dashboard_widget($_, $args) {
         <?= $html ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
-        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $note->ID ?>">delete</button></div>
-        <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $note->ID ?>">edit</button></div>
+        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $note->ID ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+        <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $note->ID ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
     </div>
 
     <?php
@@ -215,12 +215,12 @@ function mdn_show_update_notice() {
                     echo '<div style="margin-top: 0.5em; padding-top: 2px;"></div>';
                 } else {
                     ?>
-                        <h3>WPAdmin Notes <small>just released an update</small></h3>
+                        <h3>WPAdmin Notes <small><?= __( 'just released an update', 'mdn-notes' ) ?></small></h3>
                         <p>
-                            <a href="<?= esc_url( admin_url() . 'plugin-install.php?tab=upload' ) ?>" class="button button-primary"> <strong>Update Now</strong>!</a> 
-                            <button id="mdn-skip-release" class="button button-secondary">skip this release</button>
+                            <a href="<?= esc_url( admin_url() . 'plugin-install.php?tab=upload' ) ?>" class="button button-primary"> <strong><?= __( 'Update Now', 'mdn-notes' ) ?></strong>!</a> 
+                            <button id="mdn-skip-release" class="button button-secondary"><?= __( 'skip this release', 'mdn-notes' ) ?></button>
                             <div>
-                                <a href="#">Need help updating?</a> | 
+                                <a href="#"><?= __( 'Need help updating', 'mdn-notes' ) ?>?</a> | 
                                 <a href="https://github.com/era-net/wp-admin-notes/releases/latest" target="_blank"><strong><?= get_option("mdn_latest") ?></strong></a>
                             </div>
                         </p>

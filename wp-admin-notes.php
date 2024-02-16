@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/era-net/wp-admin-notes
  * Description:       A handy markdown note block for your admin panel.
  * Version:           1.0.2
- * Requires at least: 5.2
+ * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            ERA
  * Author URI:        https://era-kast.ch/

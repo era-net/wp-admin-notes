@@ -60,10 +60,13 @@ function mdn_enqueue_admin_scripts() {
 
     // Skipping releases
     wp_enqueue_script('mdn-admin-skip-release', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-skip-release.min.js', ['jquery'], '', true);
+    wp_localize_script('mdn-admin-skip-release', 'skipRelease', [__( 'confirm skipping', 'mdn-notes' )]);
 
 }
 
-// add a link to the WP Toolbar
+/**
+ * NEW NOTE TOOLBAR BUTTON
+ */
 add_action('admin_bar_menu', 'mdn_custom_toolbar_link', 9998);
 function mdn_custom_toolbar_link($wp_admin_bar) {
     $screen = get_current_screen();
@@ -110,7 +113,10 @@ function mdn_init_dashboard_widgets() {
         );
     }
 }
- 
+
+/**
+ * RENDERING THE NOTES
+ */
 function mdn_render_dashboard_widget($_, $args) {
     require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
@@ -174,7 +180,7 @@ function mdn_render_dashboard_widget($_, $args) {
 }
 
 /**
- * CHECK FOR UPDATES AND LETS THE USER UPDATE IF UPDATES ARE AVAILABLE
+ * CHECK FOR UPDATES
  * Checks for updates and displays a notice if updates are available.
  */
 add_action('current_screen', 'mdn_check_for_updates');

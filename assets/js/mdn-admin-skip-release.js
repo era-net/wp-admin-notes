@@ -12,7 +12,7 @@ function skip_release_listener($) {
     if ($("#mdn-skip-release").length) {
         $("#mdn-skip-release").on("click", (el) => {
             $(el.target).off("click");
-            $(el.target).text("confirm skipping");
+            $(el.target).text(skipRelease[0]);
             $(el.target).on("click", (el) => {
                 const a = $(el.target).prev()[0];
                 $(a).attr("disabled", true);

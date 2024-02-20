@@ -42,10 +42,16 @@ msgid "just released an update"
 msgstr "hat gerade ein Update veröffentlicht"
 
 msgid "Update Now"
-msgstr "jetzt aktualisieren"
+msgstr "Jetzt aktualisieren"
 
 msgid "skip this release"
 msgstr "Aktualisierung überspringen"
 
+msgid "confirm skipping"
+msgstr "überspringen bestätigen"
+
 msgid "Need help updating"
 msgstr "Brauchst du Hilfe bei der Aktualisierung"
+
+msgid "https://commonmark.org/help/"
+msgstr "https://era-kast.ch/markdown-auf-einen-blick/"

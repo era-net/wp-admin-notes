@@ -12,6 +12,9 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\TaskList\TaskListItemMarker;
 use League\CommonMark\MarkdownConverter;
 
+/**
+ * GETTING THE CONTENTS FOR A NEW NOTE
+ */
 add_action( 'wp_ajax_nopriv_mdn_add_new_note', 'mdn_add_new_note' );
 add_action( 'wp_ajax_mdn_add_new_note', 'mdn_add_new_note' );
 function mdn_add_new_note() {
@@ -40,7 +43,7 @@ function mdn_add_new_note() {
             </div>
             <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;" spellcheck="false"></textarea>
             <div class="mdn-markdown-footer-space-between">
-                <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="https://commonmark.org/help/" target="_blank"><b>Markdown</b></a>.</div>
+                <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="<?= __( 'https://commonmark.org/help/', 'mdn-notes' ) ?>" target="_blank"><b>Markdown</b></a>.</div>
                 <div class="mdn-text-muted"><span id="<?= $text_count_id ?>">0</span> / 5000</div>
             </div>
         </div>
@@ -60,6 +63,9 @@ function mdn_add_new_note() {
     die();
 }
 
+/**
+ * SAVING A NEW NOTE
+ */
 add_action( 'wp_ajax_nopriv_mdn_save_note', 'mdn_save_note' );
 add_action( 'wp_ajax_mdn_save_note', 'mdn_save_note' );
 function mdn_save_note() {
@@ -144,6 +150,9 @@ function mdn_save_note() {
     die();
 }
 
+/**
+ * UPDATING A NOTE
+ */
 add_action( 'wp_ajax_nopriv_mdn_update_note', 'mdn_update_note' );
 add_action( 'wp_ajax_mdn_update_note', 'mdn_update_note' );
 function mdn_update_note() {
@@ -226,6 +235,9 @@ function mdn_update_note() {
     die();
 }
 
+/**
+ * GETTING THE CONTENTS TO UPDATE A NOTE
+ */
 add_action( 'wp_ajax_nopriv_mdn_update_form_content', 'mdn_update_form_content' );
 add_action( 'wp_ajax_mdn_update_form_content', 'mdn_update_form_content' );
 function mdn_update_form_content() {
@@ -244,7 +256,7 @@ function mdn_update_form_content() {
     </div>
     <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;" spellcheck="false"><?= $content ?></textarea>
     <div class="mdn-markdown-footer-space-between">
-        <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="https://commonmark.org/help/" target="_blank"><b>Markdown</b></a>.</div>
+        <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="<?= __( 'https://commonmark.org/help/', 'mdn-notes' ) ?>" target="_blank"><b>Markdown</b></a>.</div>
         <div class="mdn-text-muted"><span id="<?= $text_count_id ?>"><?= strlen($content); ?></span> / 5000</div>
     </div>
 
@@ -260,6 +272,9 @@ function mdn_update_form_content() {
     die();
 }
 
+/**
+ * DELETING A NOTE
+ */
 add_action( 'wp_ajax_nopriv_mdn_delete_note', 'mdn_delete_note' );
 add_action( 'wp_ajax_mdn_delete_note', 'mdn_delete_note' );
 function mdn_delete_note() {

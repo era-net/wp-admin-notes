@@ -105,7 +105,7 @@ function mdn_revoke_edit_listeners($) {
             $("#mdn_note_update_text_content_" + $(el).data("note-id")).off("dblclick");
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
-            mdn_handle_update_state($, noteId, el);
+            mdn_handle_update_state($, noteId);
         });
     });
     $('div[id^="mdn_note_"]').each((_, el) => {

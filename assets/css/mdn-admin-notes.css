@@ -25,6 +25,16 @@ div.mdn-markdown-content ul li.mdn-task-list-item input {
     vertical-align: middle;
 }
 
+div.mdn-markdown-content pre {
+    padding: 3px 5px 2px;
+    background: rgba(0,0,0,.07);
+}
+
+div.mdn-markdown-content pre code {
+    padding: 0;
+    background: none;
+}
+
 .mdn-text-muted {
     color: #646970;
 }

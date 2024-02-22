@@ -35,6 +35,10 @@ div.mdn-markdown-content pre code {
     background: none;
 }
 
+.postbox-header button.mdn-cancle-edit {
+    margin-right: 12px;
+}
+
 .mdn-text-muted {
     color: #646970;
 }

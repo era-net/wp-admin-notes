@@ -27,6 +27,8 @@ function mdn_add_new_note() {
     $note_id = absint($next_id);
     $widget_id = 'mdn_note_' . $note_id;
     $title_id = 'mdn_note_title_' . $note_id;
+    $title_input = 'mdn_note_title_ipt_' . $note_id;
+    $cancel_btn = 'mdn_cancel_btn_' . $note_id;
     $content_id = 'mdn_note_content_' . $note_id;
     $text_content_id = 'mdn_note_text_content_' . $note_id;
     $text_count_id = 'mdn_note_text_count_' . $note_id;
@@ -35,7 +37,10 @@ function mdn_add_new_note() {
 
     <div id="<?= $widget_id ?>" class="postbox">
         <div class="postbox-header">
-            <h2 id="<?= $title_id ?>" class="hndle"><?= __( 'New Note', 'mdn-notes' ) ?></h2>
+            <h2 id="<?= $title_id ?>" class="mdn-header-edit-state">
+                <input type="text" id="<?= $title_input ?>" value="<?= __( 'New Note', 'mdn-notes' ) ?>">
+            </h2>
+            <div><button id="<?= $cancel_btn ?>" class="button button-secondary mdn-cancle-edit">cancel</button></div>
         </div>
         <div id="<?= $content_id ?>" class="inside">
             <div class="mdn-markdown-header-flex-end">
@@ -55,6 +60,8 @@ function mdn_add_new_note() {
         'note' => ob_get_clean(),
         'widgetId' => $widget_id,
         'titleId' => $title_id,
+        'titleInput' => $title_input,
+        'cancelBtn' => $cancel_btn,
         'contentId' => $content_id,
         'textContentId' => $text_content_id,
         'textCountId' => $text_count_id
@@ -70,6 +77,7 @@ add_action( 'wp_ajax_nopriv_mdn_save_note', 'mdn_save_note' );
 add_action( 'wp_ajax_mdn_save_note', 'mdn_save_note' );
 function mdn_save_note() {
     $data = $_POST['data'];
+    $title_content = sanitize_text_field($data["titleContent"]);
     $note_content = sanitize_textarea_field($data['textContent']);
     $char_count = strlen($note_content);
 
@@ -78,7 +86,7 @@ function mdn_save_note() {
         $args = [
             'post_status'  => 'publish',
             'post_type'    => 'mdn_note',
-            'post_title'   => 'New Note',
+            'post_title'   => $title_content,
             'post_content' => $note_content
         ];
 
@@ -136,7 +144,8 @@ function mdn_save_note() {
         <?php
         $rsp = [
             'status' => 'success',
-            'content' => ob_get_clean(),
+            'title' => $title_content,
+            'content' => stripslashes(ob_get_clean()),
             'charCount' => $char_count,
             'trigger' => ($_POST['trigger'] === 'undefined') ? 'undefined' : $_POST['trigger']
         ];
@@ -228,7 +237,7 @@ function mdn_update_note() {
     <?php
     $rsp = [
         'status' => 'success',
-        'content' => ob_get_clean()
+        'content' => stripslashes(ob_get_clean())
     ];
 
     echo json_encode($rsp);

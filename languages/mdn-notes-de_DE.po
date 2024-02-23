@@ -55,3 +55,6 @@ msgstr "Brauchst du Hilfe bei der Aktualisierung"
 
 msgid "https://commonmark.org/help/"
 msgstr "https://era-kast.ch/markdown-auf-einen-blick/"
+
+msgid "cancel"
+msgstr "abbrechen"

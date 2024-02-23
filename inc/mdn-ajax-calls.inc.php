@@ -40,13 +40,13 @@ function mdn_add_new_note() {
             <h2 id="<?= $title_id ?>" class="mdn-header-edit-state">
                 <input type="text" id="<?= $title_input ?>" value="<?= __( 'New Note', 'mdn-notes' ) ?>">
             </h2>
-            <div><button id="<?= $cancel_btn ?>" class="button button-secondary mdn-cancle-edit">cancel</button></div>
+            <div><button id="<?= $cancel_btn ?>" class="button button-secondary mdn-cancle-edit" tabindex="-1"><?= __( 'cancel', 'mdn-notes' ) ?></button></div>
         </div>
         <div id="<?= $content_id ?>" class="inside">
             <div class="mdn-markdown-header-flex-end">
                 <div><?= __( 'Press', 'mdn-notes' ) ?> <code>CTRL</code> + <code>ENTER</code> <?= __( 'to save', 'mdn-notes' ) ?></div>
             </div>
-            <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;" spellcheck="false"></textarea>
+            <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;"></textarea>
             <div class="mdn-markdown-footer-space-between">
                 <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="<?= __( 'https://commonmark.org/help/', 'mdn-notes' ) ?>" target="_blank"><b>Markdown</b></a>.</div>
                 <div class="mdn-text-muted"><span id="<?= $text_count_id ?>">0</span> / 5000</div>
@@ -263,7 +263,7 @@ function mdn_update_form_content() {
     <div class="mdn-markdown-header-flex-end">
         <div><?= __( 'Press', 'mdn-notes' ) ?> <code>CTRL</code> + <code>ENTER</code> <?= __( 'to save', 'mdn-notes' ) ?></div>
     </div>
-    <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;" spellcheck="false"><?= $content ?></textarea>
+    <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;"><?= $content ?></textarea>
     <div class="mdn-markdown-footer-space-between">
         <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="<?= __( 'https://commonmark.org/help/', 'mdn-notes' ) ?>" target="_blank"><b>Markdown</b></a>.</div>
         <div class="mdn-text-muted"><span id="<?= $text_count_id ?>"><?= strlen($content); ?></span> / 5000</div>

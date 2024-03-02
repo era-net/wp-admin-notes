@@ -11,8 +11,10 @@ jQuery(document).ready(($) => {
                 $("#" + re.textContentId).trigger("focus");
                 $("#" + re.textContentId).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
-                        $("#" + re.textContentId).prop("disabled", true);
+                        $("#" + re.cancelBtn).remove();
                         $("#" + re.textContentId).trigger("blur");
+                        $("#" + re.textContentId).prop("disabled", true);
+                        re.titleContent = $("#" + re.titleInput).val();
                         re.textContent = $("#" + re.textContentId).val();
                         delete re.note;
                         mdn_save_handler($, re);
@@ -28,8 +30,23 @@ jQuery(document).ready(($) => {
                         )
                     }
                 });
+                $("#" + re.titleInput).on("keydown", (e) => {
+                    if (e.ctrlKey && e.keyCode == 13) {
+                        $("#" + re.cancelBtn).remove();
+                        $("#" + re.titleInput).trigger("blur");
+                        $("#" + re.titleInput).prop("disabled", true);
+                        re.titleContent = $("#" + re.titleInput).val();
+                        re.textContent = $("#" + re.textContentId).val();
+                        delete re.note;
+                        mdn_save_handler($, re);
+                    }
+                });
                 $("#" + re.textContentId).on("keyup", () => {
                     $("#" + re.textCountId).text($("#" + re.textContentId).val().length);
+                });
+                // cancle note
+                $("#" + re.cancelBtn).on("click", () => {
+                    $("#" + re.widgetId).remove();
                 });
             }
         });
@@ -52,6 +69,8 @@ function check_version($) {
 
 function mdn_save_handler($, obj) {
     const data = obj;
+    $("#" + obj.titleId).html($("#" + obj.titleInput).val());
+    $("#" + obj.titleId).addClass("hndle ui-sortable-handle");
     $.ajax({
         url: ajaxurl,
         method: "POST",
@@ -105,7 +124,7 @@ function mdn_revoke_edit_listeners($) {
             $("#mdn_note_update_text_content_" + $(el).data("note-id")).off("dblclick");
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
-            mdn_handle_update_state($, noteId, el);
+            mdn_handle_update_state($, noteId);
         });
     });
     $('div[id^="mdn_note_"]').each((_, el) => {

@@ -138,8 +138,8 @@ function mdn_save_note() {
             <?= $html ?>
         </div>
         <div class="mdn-markdown-footer-flex-end">
-            <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $note_id ?>">delete</button></div>
-            <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $note_id ?>">edit</button></div>
+            <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $note_id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+            <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $note_id ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
         </div>
         <?php
         $rsp = [
@@ -230,8 +230,8 @@ function mdn_update_note() {
         <?= $html ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
-        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $id ?>">delete</button></div>
-        <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $id ?>">edit</button></div>
+        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+        <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $id ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
     </div>
 
     <?php

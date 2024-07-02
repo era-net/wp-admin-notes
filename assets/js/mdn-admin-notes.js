@@ -248,7 +248,7 @@ function mdn_init_delete_listeners($) {
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
             const noteTitle = $("#mdn_note_" + noteId).find("h2:first").text();
-            if (confirm('Sure to delete "' + noteTitle + '"?') == true) {
+            if (confirm($(el).data("confirm-message")) == true) {
                 $.ajax({
                     url: ajaxurl,
                     method: "POST",

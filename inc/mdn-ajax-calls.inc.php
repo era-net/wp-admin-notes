@@ -22,7 +22,7 @@ function mdn_add_new_note() {
     header("Content-Type: application/json");
 
     $table_name = $wpdb->prefix . 'posts';
-    $get_id = $wpdb->get_row("SHOW TABLE STATUS LIKE '$table_name'"); 
+    $get_id = $wpdb->get_row("SHOW TABLE STATUS LIKE '$table_name'");
     $next_id = $get_id->Auto_increment;
 
     $note_id = absint($next_id);
@@ -142,7 +142,7 @@ function mdn_save_note() {
             <?= $html ?>
         </div>
         <div class="mdn-markdown-footer-flex-end">
-            <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $note_id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+            <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $title_content ) ?>" data-note-id="<?= $note_id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
             <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $note_id ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
         </div>
         <?php
@@ -237,7 +237,7 @@ function mdn_update_note() {
         <?= $html ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
-        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $title ) ?>" data-note-id="<?= $id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
         <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $id ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
     </div>
 

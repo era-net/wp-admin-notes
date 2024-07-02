@@ -1,5 +1,4 @@
 <?php
-header("Content-Type: application/json");
 require_once plugin_dir_path(__FILE__) . '../vendor/autoload.php';
 
 use League\CommonMark\Environment\Environment;
@@ -19,6 +18,8 @@ add_action( 'wp_ajax_nopriv_mdn_add_new_note', 'mdn_add_new_note' );
 add_action( 'wp_ajax_mdn_add_new_note', 'mdn_add_new_note' );
 function mdn_add_new_note() {
     global $wpdb;
+
+    header("Content-Type: application/json");
 
     $table_name = $wpdb->prefix . 'posts';
     $get_id = $wpdb->get_row("SHOW TABLE STATUS LIKE '$table_name'"); 
@@ -76,6 +77,9 @@ function mdn_add_new_note() {
 add_action( 'wp_ajax_nopriv_mdn_save_note', 'mdn_save_note' );
 add_action( 'wp_ajax_mdn_save_note', 'mdn_save_note' );
 function mdn_save_note() {
+
+    header("Content-Type: application/json");
+
     $data = $_POST['data'];
     $title_content = sanitize_text_field($data["titleContent"]);
     $note_content = sanitize_textarea_field($data['textContent']);
@@ -165,6 +169,9 @@ function mdn_save_note() {
 add_action( 'wp_ajax_nopriv_mdn_update_note', 'mdn_update_note' );
 add_action( 'wp_ajax_mdn_update_note', 'mdn_update_note' );
 function mdn_update_note() {
+
+    header("Content-Type: application/json");
+
     $id = absint($_POST['id']);
 
     if (get_post_type($id) != 'mdn_note') {
@@ -250,6 +257,9 @@ function mdn_update_note() {
 add_action( 'wp_ajax_nopriv_mdn_update_form_content', 'mdn_update_form_content' );
 add_action( 'wp_ajax_mdn_update_form_content', 'mdn_update_form_content' );
 function mdn_update_form_content() {
+
+    header("Content-Type: application/json");
+
     $id = absint($_POST['id']);
 
     $post = get_post($id);
@@ -287,6 +297,9 @@ function mdn_update_form_content() {
 add_action( 'wp_ajax_nopriv_mdn_delete_note', 'mdn_delete_note' );
 add_action( 'wp_ajax_mdn_delete_note', 'mdn_delete_note' );
 function mdn_delete_note() {
+
+    header("Content-Type: application/json");
+
     $post_id = absint($_POST['noteId']);
     if (get_post_type($post_id) != 'mdn_note') {
         die();
@@ -309,6 +322,9 @@ function mdn_delete_note() {
 add_action( 'wp_ajax_nopriv_update_version', 'update_version' );
 add_action( 'wp_ajax_update_version', 'update_version' );
 function update_version() {
+
+    header("Content-Type: application/json");
+
     $url = "https://era-kast.ch/updater/wp-admin-notes.php";
 
     $curl = curl_init($url);
@@ -336,6 +352,9 @@ function update_version() {
 add_action( 'wp_ajax_nopriv_mdn_skip_release', 'mdn_skip_release' );
 add_action( 'wp_ajax_mdn_skip_release', 'mdn_skip_release' );
 function mdn_skip_release() {
+    
+    header("Content-Type: application/json");
+
     $latest = get_option("mdn_latest");
 
     update_option("mdn_release_skip", $latest);

@@ -1,5 +1,6 @@
 ## v1.0.4
 - Fix issue [#9](https://github.com/era-net/wp-admin-notes/issues/9)
+- Fix interference bugs with other plugins 
 
 ## v1.0.3
 - Adding german translation

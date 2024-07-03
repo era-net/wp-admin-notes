@@ -166,6 +166,7 @@ function mdn_handle_update_state($, noteId) {
                 $(textArea).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
                         $("#" + re.textContentId).prop("disabled", true);
+                        $(input).prop("disabled", true);
                         $("#" + re.textContentId).trigger("blur");
                         $.ajax({
                             url: ajaxurl,

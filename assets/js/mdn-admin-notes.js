@@ -11,9 +11,11 @@ jQuery(document).ready(($) => {
                 $("#" + re.textContentId).trigger("focus");
                 $("#" + re.textContentId).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
-                        $("#" + re.cancelBtn).remove();
+                        $("#" + re.cancelBtn).hide();
+                        $("#" + re.saveBtn).hide();
                         $("#" + re.textContentId).trigger("blur");
                         $("#" + re.textContentId).prop("disabled", true);
+                        $("#" + re.titleInput).prop("disabled", true);
                         re.titleContent = $("#" + re.titleInput).val();
                         re.textContent = $("#" + re.textContentId).val();
                         delete re.note;
@@ -30,20 +32,36 @@ jQuery(document).ready(($) => {
                         )
                     }
                 });
+
                 $("#" + re.titleInput).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
-                        $("#" + re.cancelBtn).remove();
+                        $("#" + re.cancelBtn).hide();
+                        $("#" + re.saveBtn).hide();
                         $("#" + re.titleInput).trigger("blur");
                         $("#" + re.titleInput).prop("disabled", true);
+                        $("#" + re.textContentId).prop("disabled", true);
                         re.titleContent = $("#" + re.titleInput).val();
                         re.textContent = $("#" + re.textContentId).val();
                         delete re.note;
                         mdn_save_handler($, re);
                     }
                 });
+
+                $("#" + re.saveBtn).on("click", () => {
+                    $("#" + re.cancelBtn).hide();
+                    $("#" + re.saveBtn).hide();
+                    $("#" + re.textContentId).prop("disabled", true);
+                    $("#" + re.titleInput).prop("disabled", true);
+                    re.titleContent = $("#" + re.titleInput).val();
+                    re.textContent = $("#" + re.textContentId).val();
+                    delete re.note;
+                    mdn_save_handler($, re);
+                });
+
                 $("#" + re.textContentId).on("keyup", () => {
                     $("#" + re.textCountId).text($("#" + re.textContentId).val().length);
                 });
+
                 // cancle note
                 $("#" + re.cancelBtn).on("click", () => {
                     $("#" + re.widgetId).remove();
@@ -69,22 +87,26 @@ function check_version($) {
 
 function mdn_save_handler($, obj) {
     const data = obj;
-    $("#" + obj.titleId).html($("#" + obj.titleInput).val());
-    $("#" + obj.titleId).addClass("hndle ui-sortable-handle");
     $.ajax({
         url: ajaxurl,
         method: "POST",
         data: { action: 'mdn_save_note', data: data },
         success: (re) => {
             if (re.status === 'success') {
+                $("#" + re.cancelBtn).remove();
+                $("#" + re.saveBtn).remove();
                 $("#" + obj.contentId).html(re.content);
+                $("#" + obj.titleId).html($("#" + obj.titleInput).val());
+                $("#" + obj.titleId).addClass("hndle ui-sortable-handle");
                 mdn_revoke_edit_listeners($);
                 mdn_revoke_delete_listeners($);
                 mdn_handle_checkboxes($);
             } else if (re.status === 'large_content') {
-                alert("Content exceeded ... Max. 2500 characters");
                 $("#" + obj.textContentId).prop("disabled", false);
-                $("#" + obj.textContentId).trigger("focus");
+                $("#" + obj.titleInput).prop("disabled", false);
+                $("#" + obj.cancelBtn).show();
+                $("#" + obj.saveBtn).show();
+                alert("Content exceeded ... Max. 2500 characters");
             }
         }
     });
@@ -140,98 +162,98 @@ function mdn_revoke_edit_listeners($) {
 function mdn_handle_update_state($, noteId) {
     const widget = $("#mdn_note_" + noteId);
     $(widget).off("dblclick");
-    const title = $(widget).find("h2:first");
-    const formBody = $(widget).find("div.inside:first");
-    const prevTitle = $(title).text();
-    $(title).removeClass("hndle ui-sortable-handle");
-    $(title).addClass("mdn-header-edit-state");
-    const titleText = $(title).text();
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = titleText;
-    
+
     $.ajax({
         url: ajaxurl,
         method: "POST",
         data: {action: 'mdn_update_form_content', id: noteId},
         success: (re) => {
-            $(title).html("");
-            $(formBody).html("");
-            if (re.status === 'success') {
-                $(title).append(input);
-                $(title).next().hide();
-                formBody.append(re.html);
-                const textArea = $('#' + re.textContentId);
-                $(textArea).off("dblclick");
-                $(textArea).on("keydown", (e) => {
-                    if (e.ctrlKey && e.keyCode == 13) {
-                        $("#" + re.textContentId).prop("disabled", true);
-                        $(input).prop("disabled", true);
-                        $("#" + re.textContentId).trigger("blur");
-                        $.ajax({
-                            url: ajaxurl,
-                            method: "POST",
-                            data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
-                            success: (re) => {
-                                formBody.html("");
-                                formBody.html(re.content);
-                                $(input).hide();
-                                $(title).text($(input).val());
-                                $(input).remove();
-                                $(title).addClass("hndle ui-sortable-handle");
-                                $(title).next().show();
-                                mdn_revoke_edit_listeners($);
-                                mdn_revoke_delete_listeners($);
-                                mdn_handle_checkboxes($);
-                            }
-                        });
-                    }
-                    if (e.keyCode==9 || e.which==9) {
-                        let textarea = document.getElementById(re.textContentId);
-                        e.preventDefault();
-                        textarea.setRangeText(
-                            '\t',
-                            textarea.selectionStart,
-                            textarea.selectionStart,
-                            'end'
-                        );
-                    }
-                });
-                $(input).on("keydown", (e) => {
-                    if (e.ctrlKey && e.keyCode == 13) {
-                        $(input).prop("disabled", true);
-                        $(input).trigger("blur");
-                        $(textArea).prop("disabled", true);
-                        $.ajax({
-                            url: ajaxurl,
-                            method: "POST",
-                            data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
-                            success: (re) => {
-                                formBody.html("");
-                                formBody.html(re.content);
-                                $(input).hide();
-                                $(title).text($(input).val());
-                                $(input).remove();
-                                $(title).addClass("hndle ui-sortable-handle");
-                                $(title).next().show();
-                                mdn_revoke_edit_listeners($);
-                                mdn_revoke_delete_listeners($);
-                            }
-                        });
-                    }
-                });
-                // update charcount on keyup
-                $(textArea).on("keyup", () => {
-                    $("#" + re.textCountId).text($("#" + re.textContentId).val().length);
-                });
-            }
+            $(widget).html(re.html);
         }
     });
+    
+    // $.ajax({
+    //     url: ajaxurl,
+    //     method: "POST",
+    //     data: {action: 'mdn_update_form_content', id: noteId},
+    //     success: (re) => {
+    //         $(title).html("");
+    //         $(formBody).html("");
+    //         if (re.status === 'success') {
+    //             $(title).append(input);
+    //             $(title).next().hide();
+    //             formBody.append(re.html);
+    //             const textArea = $('#' + re.textContentId);
+    //             $(textArea).off("dblclick");
+    //             $(textArea).on("keydown", (e) => {
+    //                 if (e.ctrlKey && e.keyCode == 13) {
+    //                     $("#" + re.textContentId).prop("disabled", true);
+    //                     $(input).prop("disabled", true);
+    //                     $("#" + re.textContentId).trigger("blur");
+    //                     $.ajax({
+    //                         url: ajaxurl,
+    //                         method: "POST",
+    //                         data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
+    //                         success: (re) => {
+    //                             formBody.html("");
+    //                             formBody.html(re.content);
+    //                             $(input).hide();
+    //                             $(title).text($(input).val());
+    //                             $(input).remove();
+    //                             $(title).addClass("hndle ui-sortable-handle");
+    //                             $(title).next().show();
+    //                             mdn_revoke_edit_listeners($);
+    //                             mdn_revoke_delete_listeners($);
+    //                             mdn_handle_checkboxes($);
+    //                         }
+    //                     });
+    //                 }
+    //                 if (e.keyCode==9 || e.which==9) {
+    //                     let textarea = document.getElementById(re.textContentId);
+    //                     e.preventDefault();
+    //                     textarea.setRangeText(
+    //                         '\t',
+    //                         textarea.selectionStart,
+    //                         textarea.selectionStart,
+    //                         'end'
+    //                     );
+    //                 }
+    //             });
+    //             $(input).on("keydown", (e) => {
+    //                 if (e.ctrlKey && e.keyCode == 13) {
+    //                     $(input).prop("disabled", true);
+    //                     $(input).trigger("blur");
+    //                     $(textArea).prop("disabled", true);
+    //                     $.ajax({
+    //                         url: ajaxurl,
+    //                         method: "POST",
+    //                         data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
+    //                         success: (re) => {
+    //                             formBody.html("");
+    //                             formBody.html(re.content);
+    //                             $(input).hide();
+    //                             $(title).text($(input).val());
+    //                             $(input).remove();
+    //                             $(title).addClass("hndle ui-sortable-handle");
+    //                             $(title).next().show();
+    //                             mdn_revoke_edit_listeners($);
+    //                             mdn_revoke_delete_listeners($);
+    //                         }
+    //                     });
+    //                 }
+    //             });
+    //             // update charcount on keyup
+    //             $(textArea).on("keyup", () => {
+    //                 $("#" + re.textCountId).text($("#" + re.textContentId).val().length);
+    //             });
+    //         }
+    //     }
+    // });
 
-    $(input).on("click", (e) => {
+    $('mdn_note_title_ipt_' . noteId).on("click", (e) => {
         e.stopPropagation();
     });
-    $(input).on("dblclick", (e) => {
+    $('mdn_note_title_ipt_' . noteId).on("dblclick", (e) => {
         e.stopPropagation();
     });
 }

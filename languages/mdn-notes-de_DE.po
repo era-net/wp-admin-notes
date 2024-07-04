@@ -61,3 +61,6 @@ msgstr "abbrechen"
 
 msgid "Sure to delete %s ?"
 msgstr "%s wirklich löschen ?"
+
+msgid "save"
+msgstr "speichern"

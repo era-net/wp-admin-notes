@@ -30,6 +30,7 @@ function mdn_add_new_note() {
     $title_id = 'mdn_note_title_' . $note_id;
     $title_input = 'mdn_note_title_ipt_' . $note_id;
     $cancel_btn = 'mdn_cancel_btn_' . $note_id;
+    $save_btn = 'mdn_save_btn_' . $note_id;
     $content_id = 'mdn_note_content_' . $note_id;
     $text_content_id = 'mdn_note_text_content_' . $note_id;
     $text_count_id = 'mdn_note_text_count_' . $note_id;
@@ -41,12 +42,12 @@ function mdn_add_new_note() {
             <h2 id="<?= $title_id ?>" class="mdn-header-edit-state">
                 <input type="text" id="<?= $title_input ?>" value="<?= __( 'New Note', 'mdn-notes' ) ?>">
             </h2>
-            <div><button id="<?= $cancel_btn ?>" class="button button-secondary mdn-cancle-edit" tabindex="-1"><?= __( 'cancel', 'mdn-notes' ) ?></button></div>
+            <div>
+                <button id="<?= $cancel_btn ?>" class="button button-secondary mdn-cancle-button" tabindex="-1"><?= __( 'cancel', 'mdn-notes' ) ?></button>
+                <button id="<?= $save_btn ?>" class="button button-primary mdn-save-button" tabindex="-1" title="[Ctrl + Enter]"><?= __( 'save', 'mdn-notes' ) ?></button>
+            </div>
         </div>
         <div id="<?= $content_id ?>" class="inside">
-            <div class="mdn-markdown-header-flex-end">
-                <div><?= __( 'Press', 'mdn-notes' ) ?> <code>CTRL</code> + <code>ENTER</code> <?= __( 'to save', 'mdn-notes' ) ?></div>
-            </div>
             <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;"></textarea>
             <div class="mdn-markdown-footer-space-between">
                 <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="<?= __( 'https://commonmark.org/help/', 'mdn-notes' ) ?>" target="_blank"><b>Markdown</b></a>.</div>
@@ -63,6 +64,7 @@ function mdn_add_new_note() {
         'titleId' => $title_id,
         'titleInput' => $title_input,
         'cancelBtn' => $cancel_btn,
+        'saveBtn' => $save_btn,
         'contentId' => $content_id,
         'textContentId' => $text_content_id,
         'textCountId' => $text_count_id

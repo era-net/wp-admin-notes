@@ -2,6 +2,7 @@ jQuery(document).ready(($) => {
     check_version($);
     mdn_handle_checkboxes($);
     $( document.body ).on( 'click', '.mdn-notes-add-note, #mdn-notes-add a', (e) => {
+
         $.ajax({
             url: ajaxurl,
             method: "POST",
@@ -12,6 +13,7 @@ jQuery(document).ready(($) => {
                 $("#" + re.textContentId).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
                         $("#" + re.cancelBtn).remove();
+                        $("#" + re.saveBtn).remove();
                         $("#" + re.textContentId).trigger("blur");
                         $("#" + re.textContentId).prop("disabled", true);
                         re.titleContent = $("#" + re.titleInput).val();
@@ -30,20 +32,37 @@ jQuery(document).ready(($) => {
                         )
                     }
                 });
+
+                $("#" + re.saveBtn).on("click", () => {
+                    $("#" + re.cancelBtn).remove();
+                    $("#" + re.saveBtn).remove();
+                    $("#" + re.titleInput).prop("disabled", true);
+                    $("#" + re.textContentId).prop("disabled", true);
+                    re.titleContent = $("#" + re.titleInput).val();
+                    re.textContent = $("#" + re.textContentId).val();
+                    delete re.note;
+                    mdn_save_handler($, re);
+                });
+
                 $("#" + re.titleInput).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
                         $("#" + re.cancelBtn).remove();
+                        $("#" + re.saveBtn).remove();
                         $("#" + re.titleInput).trigger("blur");
                         $("#" + re.titleInput).prop("disabled", true);
+                        $("#" + re.textContentId).prop("disabled", true);
                         re.titleContent = $("#" + re.titleInput).val();
                         re.textContent = $("#" + re.textContentId).val();
                         delete re.note;
                         mdn_save_handler($, re);
                     }
                 });
+
+                // update charcount on keyup
                 $("#" + re.textContentId).on("keyup", () => {
                     $("#" + re.textCountId).text($("#" + re.textContentId).val().length);
                 });
+
                 // cancle note
                 $("#" + re.cancelBtn).on("click", () => {
                     $("#" + re.widgetId).remove();
@@ -220,6 +239,7 @@ function mdn_handle_update_state($, noteId) {
                         });
                     }
                 });
+
                 // update charcount on keyup
                 $(textArea).on("keyup", () => {
                     $("#" + re.textCountId).text($("#" + re.textContentId).val().length);

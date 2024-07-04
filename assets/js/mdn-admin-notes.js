@@ -243,6 +243,7 @@ function mdn_handle_update_state($, noteId) {
                 $(controlSave).on("click", () => {
                     $(input).prop("disabled", true);
                     $(textArea).prop("disabled", true);
+                    $(controlCancel).prop("disabled", true);
 
                     mdn_update_handler($, obj);
                 });

@@ -11,6 +11,53 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\TaskList\TaskListItemMarker;
 use League\CommonMark\MarkdownConverter;
 
+function md_to_html($md) {
+    $env_config = [
+        'default_attributes' => [
+            Link::class => [
+                'target' => '_blank',
+            ],
+            ListBlock::class => [
+                'class' => static function (ListBlock $ul) {
+                    foreach ($ul->children() as $x) {
+                        foreach ($x->children() as $y) {
+                            if ($y->firstChild() instanceof TaskListItemMarker){
+                                return "mdn-has-task-list";
+                            }
+                        }
+                    }
+                }
+            ],
+            ListItem::class => [
+                'class' => static function (ListItem $li) {
+                    foreach ($li->children() as $ch) {
+                        if ($ch->firstChild() instanceof TaskListItemMarker) {
+                            return 'mdn-task-list-item';
+                        }
+                    }
+                }
+            ]
+        ],
+        'html_input' => 'escape',
+        'allow_unsafe_links' => false,
+        'max_nesting_level' => 12,
+        'renderer' => [
+            'soft_break' => '</br>'
+        ],
+    ];
+
+    $env = new Environment($env_config);
+    $env->addExtension(new CommonMarkCoreExtension());
+    $env->addExtension(new DefaultAttributesExtension());
+    $env->addExtension(new GithubFlavoredMarkdownExtension());
+
+    $converter = new MarkdownConverter($env);
+
+    $html = $converter->convert($md)->getContent();
+
+    return $html;
+}
+
 /**
  * GETTING THE CONTENTS FOR A NEW NOTE
  */
@@ -98,50 +145,9 @@ function mdn_save_note() {
 
         $note_id = wp_insert_post($args);
 
-        $env_config = [
-            'default_attributes' => [
-                Link::class => [
-                    'target' => '_blank',
-                ],
-                ListBlock::class => [
-                    'class' => static function (ListBlock $ul) {
-                        foreach ($ul->children() as $x) {
-                            foreach ($x->children() as $y) {
-                                if ($y->firstChild() instanceof TaskListItemMarker){
-                                    return "mdn-has-task-list";
-                                }
-                            }
-                        }
-                    }
-                ],
-                ListItem::class => [
-                    'class' => static function (ListItem $li) {
-                        foreach ($li->children() as $ch) {
-                            if ($ch->firstChild() instanceof TaskListItemMarker) {
-                                return 'mdn-task-list-item';
-                            }
-                        }
-                    }
-                ]
-            ],
-            'html_input' => 'escape',
-            'allow_unsafe_links' => false,
-            'max_nesting_level' => 12,
-            'renderer' => [
-                'soft_break' => '</br>'
-            ],
-        ];
-
-        $env = new Environment($env_config);
-        $env->addExtension(new CommonMarkCoreExtension());
-        $env->addExtension(new DefaultAttributesExtension());
-        $env->addExtension(new GithubFlavoredMarkdownExtension());
-
-        $converter = new MarkdownConverter($env);
-        $html = $converter->convert($note_content)->getContent();
         ob_start() ?>
         <div class="mdn-markdown-content">
-            <?= $html ?>
+            <?= md_to_html($note_content) ?>
         </div>
         <div class="mdn-markdown-footer-flex-end">
             <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $title_content ) ?>" data-note-id="<?= $note_id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
@@ -191,52 +197,10 @@ function mdn_update_note() {
 
     wp_update_post($post);
 
-    $env_config = [
-        'default_attributes' => [
-            Link::class => [
-                'target' => '_blank',
-            ],
-            ListBlock::class => [
-                'class' => static function (ListBlock $ul) {
-                    foreach ($ul->children() as $x) {
-                        foreach ($x->children() as $y) {
-                            if ($y->firstChild() instanceof TaskListItemMarker){
-                                return "mdn-has-task-list";
-                            }
-                        }
-                    }
-                }
-            ],
-            ListItem::class => [
-                'class' => static function (ListItem $li) {
-                    foreach ($li->children() as $ch) {
-                        if ($ch->firstChild() instanceof TaskListItemMarker) {
-                            return 'mdn-task-list-item';
-                        }
-                    }
-                }
-            ]
-        ],
-        'html_input' => 'escape',
-        'allow_unsafe_links' => false,
-        'max_nesting_level' => 12,
-        'renderer' => [
-            'soft_break' => '</br>'
-        ],
-    ];
-
-    $env = new Environment($env_config);
-    $env->addExtension(new CommonMarkCoreExtension());
-    $env->addExtension(new DefaultAttributesExtension());
-    $env->addExtension(new GithubFlavoredMarkdownExtension());
-
-    $converter = new MarkdownConverter($env);
-    $html = $converter->convert($content)->getContent();
-
     ob_start(); ?>
 
     <div class="mdn-markdown-content">
-        <?= $html ?>
+        <?= md_to_html($content) ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
         <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $title ) ?>" data-note-id="<?= $id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
@@ -303,9 +267,11 @@ function mdn_delete_note() {
     header("Content-Type: application/json");
 
     $post_id = absint($_POST['noteId']);
+    
     if (get_post_type($post_id) != 'mdn_note') {
         die();
     }
+
     wp_delete_post($post_id, true);
 
     $rsp = [

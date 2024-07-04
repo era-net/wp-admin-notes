@@ -156,6 +156,26 @@ function mdn_revoke_edit_listeners($) {
     });
 }
 
+function mdn_update_handler($, obj) {
+    $.ajax({
+        url: ajaxurl,
+        method: "POST",
+        data: {action: "mdn_update_note", id: obj.noteId, title: $(obj.input).val(), content: $(obj.textArea).val()},
+        success: (re) => {
+            obj.formBody.html("");
+            obj.formBody.html(re.content);
+            $(obj.input).hide();
+            $(obj.h2).text($(obj.input).val());
+            $(obj.input).remove();
+            $(obj.h2).addClass("hndle ui-sortable-handle");
+            $(obj.h2).next().show();
+            mdn_revoke_edit_listeners($);
+            mdn_revoke_delete_listeners($);
+            mdn_handle_checkboxes($);
+        }
+    });
+}
+
 function mdn_handle_update_state($, noteId) {
     const widget = $("#mdn_note_" + noteId);
     $(widget).off("dblclick");
@@ -182,28 +202,20 @@ function mdn_handle_update_state($, noteId) {
                 formBody.append(re.html);
                 const textArea = $('#' + re.textContentId);
                 $(textArea).off("dblclick");
+                const obj = {
+                    "noteId": noteId,
+                    "h2": title,
+                    "input": input,
+                    "textArea": textArea,
+                    "formBody": formBody
+                };
                 $(textArea).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
-                        $("#" + re.textContentId).prop("disabled", true);
+                        $(textArea).prop("disabled", true);
                         $(input).prop("disabled", true);
-                        $("#" + re.textContentId).trigger("blur");
-                        $.ajax({
-                            url: ajaxurl,
-                            method: "POST",
-                            data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
-                            success: (re) => {
-                                formBody.html("");
-                                formBody.html(re.content);
-                                $(input).hide();
-                                $(title).text($(input).val());
-                                $(input).remove();
-                                $(title).addClass("hndle ui-sortable-handle");
-                                $(title).next().show();
-                                mdn_revoke_edit_listeners($);
-                                mdn_revoke_delete_listeners($);
-                                mdn_handle_checkboxes($);
-                            }
-                        });
+                        $(textArea).trigger("blur");
+
+                        mdn_update_handler($, obj);
                     }
                     if (e.keyCode==9 || e.which==9) {
                         let textarea = document.getElementById(re.textContentId);
@@ -221,22 +233,8 @@ function mdn_handle_update_state($, noteId) {
                         $(input).prop("disabled", true);
                         $(input).trigger("blur");
                         $(textArea).prop("disabled", true);
-                        $.ajax({
-                            url: ajaxurl,
-                            method: "POST",
-                            data: {action: 'mdn_update_note', id: noteId, title: $(input).val(), content: $(textArea).val()},
-                            success: (re) => {
-                                formBody.html("");
-                                formBody.html(re.content);
-                                $(input).hide();
-                                $(title).text($(input).val());
-                                $(input).remove();
-                                $(title).addClass("hndle ui-sortable-handle");
-                                $(title).next().show();
-                                mdn_revoke_edit_listeners($);
-                                mdn_revoke_delete_listeners($);
-                            }
-                        });
+
+                        mdn_update_handler($, obj);
                     }
                 });
 

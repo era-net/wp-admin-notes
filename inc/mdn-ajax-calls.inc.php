@@ -11,7 +11,7 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\TaskList\TaskListItemMarker;
 use League\CommonMark\MarkdownConverter;
 
-function md_to_html($md) {
+function mdn_md_to_html($md) {
     $env_config = [
         'default_attributes' => [
             Link::class => [
@@ -55,7 +55,7 @@ function md_to_html($md) {
 
     $html = $converter->convert($md)->getContent();
 
-    return $html;
+    return stripslashes($html);
 }
 
 /**
@@ -147,7 +147,7 @@ function mdn_save_note() {
 
         ob_start() ?>
         <div class="mdn-markdown-content">
-            <?= md_to_html($note_content) ?>
+            <?= mdn_md_to_html($note_content) ?>
         </div>
         <div class="mdn-markdown-footer-flex-end">
             <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $title_content ) ?>" data-note-id="<?= $note_id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
@@ -200,7 +200,7 @@ function mdn_update_note() {
     ob_start(); ?>
 
     <div class="mdn-markdown-content">
-        <?= md_to_html($content) ?>
+        <?= mdn_md_to_html($content) ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
         <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $title ) ?>" data-note-id="<?= $id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
@@ -236,9 +236,6 @@ function mdn_update_form_content() {
 
     ob_start(); ?>
 
-    <div class="mdn-markdown-header-flex-end">
-        <div><?= __( 'Press', 'mdn-notes' ) ?> <code>CTRL</code> + <code>ENTER</code> <?= __( 'to save', 'mdn-notes' ) ?></div>
-    </div>
     <textarea id="<?= $text_content_id ?>" rows="8" placeholder="<?= __( 'Write your Markdown here ...', 'mdn-notes' ) ?>" style="width: 100%;"><?= $content ?></textarea>
     <div class="mdn-markdown-footer-space-between">
         <div><?= __( 'Learn more about', 'mdn-notes' ) ?> <a href="<?= __( 'https://commonmark.org/help/', 'mdn-notes' ) ?>" target="_blank"><b>Markdown</b></a>.</div>
@@ -250,8 +247,24 @@ function mdn_update_form_content() {
         'status' => 'success',
         'textContentId' => $text_content_id,
         'textCountId' => $text_count_id,
+        'controlLocale' => [
+            'cancel' => __( 'cancel', 'mdn-notes' ),
+            'save' => __( 'save', 'mdn-notes' )
+        ],
         'html' => ob_get_clean()
     ];
+
+    ob_start(); ?>
+
+    <div class="mdn-markdown-content"><?= mdn_md_to_html($content) ?></div>
+    <div class="mdn-markdown-footer-flex-end">
+        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $post->post_title ) ?>" data-note-id="<?= $id ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+        <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $id ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
+    </div>
+
+    <?php
+
+    $rsp['cancelContent'] = stripslashes(ob_get_clean());
 
     echo json_encode($rsp);
     die();

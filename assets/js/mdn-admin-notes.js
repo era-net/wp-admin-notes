@@ -118,39 +118,17 @@ function mdn_init_edit_listeners($) {
             return;
         });
     });
-    $('div[id^="mdn_note_"]').each((_, el) => {
-        $(el).on("dblclick", () => {
-            $(el).off("dblclick");
-            const split = el.id.split("_");
-            const noteId = split[split.length-1];
-            mdn_handle_update_state($, noteId);
-        });
-    });
 }
 
 function mdn_revoke_edit_listeners($) {
     $('button[data-name="mdn-note-edit"]').each((_, el) => {
         $(el).off("click");
     });
-    $('div[id^="mdn_note_"]').each((_, el) => {
-        $(el).off("dblclick");
-    });
 
     $('button[data-name="mdn-note-edit"]').each((_, el) => {
         $(el).on("click", () => {
-            $("#mdn_note_" + $(el).data("note-id")).off("dblclick");
-            $("#mdn_note_content_" + $(el).data("note-id")).off("dblclick");
-            $("#mdn_note_update_text_content_" + $(el).data("note-id")).off("dblclick");
             $(el).prop("disabled", true);
             const noteId = $(el).data("note-id");
-            mdn_handle_update_state($, noteId);
-        });
-    });
-    $('div[id^="mdn_note_"]').each((_, el) => {
-        $(el).on("dblclick", () => {
-            $(el).off("dblclick");
-            const split = el.id.split("_");
-            const noteId = split[split.length-1];
             mdn_handle_update_state($, noteId);
         });
     });
@@ -167,6 +145,8 @@ function mdn_update_handler($, obj) {
             $(obj.input).hide();
             $(obj.h2).text($(obj.input).val());
             $(obj.input).remove();
+            $(obj.controlsDiv).remove();
+            $(obj.h2).removeClass("mdn-header-edit-state");
             $(obj.h2).addClass("hndle ui-sortable-handle");
             $(obj.h2).next().show();
             mdn_revoke_edit_listeners($);
@@ -178,10 +158,9 @@ function mdn_update_handler($, obj) {
 
 function mdn_handle_update_state($, noteId) {
     const widget = $("#mdn_note_" + noteId);
-    $(widget).off("dblclick");
+    $(widget).find("[data-name=mdn-note-delete]:first").prop("disabled", true);
     const title = $(widget).find("h2:first");
     const formBody = $(widget).find("div.inside:first");
-    const prevTitle = $(title).text();
     $(title).removeClass("hndle ui-sortable-handle");
     $(title).addClass("mdn-header-edit-state");
     const titleText = $(title).text();
@@ -196,19 +175,41 @@ function mdn_handle_update_state($, noteId) {
         success: (re) => {
             $(title).html("");
             $(formBody).html("");
+            
+            // control buttons
+            const header = $(widget).find("div.postbox-header:first");
+            const controlsDiv = document.createElement("div");
+            const controlCancel = document.createElement("button");
+            const controlSave = document.createElement("button");
+
+            $(controlCancel).addClass("button button-secondary mdn-cancle-button");
+            $(controlSave).addClass("button button-primary mdn-save-button");
+
+            $(controlSave).prop("title", "[Ctrl + Enter]");
+
+            $(controlCancel).text(re.controlLocale.cancel);
+            $(controlSave).text(re.controlLocale.save);
+
+            $(controlsDiv).append(controlCancel);
+            $(controlsDiv).append(controlSave);
+
+            $(header).append(controlsDiv);
+
             if (re.status === 'success') {
                 $(title).append(input);
                 $(title).next().hide();
                 formBody.append(re.html);
                 const textArea = $('#' + re.textContentId);
-                $(textArea).off("dblclick");
+
                 const obj = {
                     "noteId": noteId,
                     "h2": title,
                     "input": input,
                     "textArea": textArea,
-                    "formBody": formBody
+                    "formBody": formBody,
+                    "controlsDiv": controlsDiv
                 };
+
                 $(textArea).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
                         $(textArea).prop("disabled", true);
@@ -228,6 +229,7 @@ function mdn_handle_update_state($, noteId) {
                         );
                     }
                 });
+
                 $(input).on("keydown", (e) => {
                     if (e.ctrlKey && e.keyCode == 13) {
                         $(input).prop("disabled", true);
@@ -236,6 +238,27 @@ function mdn_handle_update_state($, noteId) {
 
                         mdn_update_handler($, obj);
                     }
+                });
+
+                $(controlSave).on("click", () => {
+                    $(input).prop("disabled", true);
+                    $(textArea).prop("disabled", true);
+
+                    mdn_update_handler($, obj);
+                });
+
+                // cancel update
+                $(controlCancel).on("click", () => {
+                    $(controlsDiv).remove();
+                    $(title).html("");
+                    $(title).text(titleText);
+                    $(title).removeClass("mdn-header-edit-state");
+                    $(title).addClass("hndle ui-sortable-handle");
+                    $(title).next().show();
+                    $(formBody).html(re.cancelContent);
+                    mdn_revoke_edit_listeners($);
+                    mdn_revoke_delete_listeners($);
+                    mdn_handle_checkboxes($);
                 });
 
                 // update charcount on keyup
@@ -247,9 +270,6 @@ function mdn_handle_update_state($, noteId) {
     });
 
     $(input).on("click", (e) => {
-        e.stopPropagation();
-    });
-    $(input).on("dblclick", (e) => {
         e.stopPropagation();
     });
 }

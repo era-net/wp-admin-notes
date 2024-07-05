@@ -1,3 +1,9 @@
+## v1.0.4
+- Fix issue [#9](https://github.com/era-net/wp-admin-notes/issues/9)
+- Fixed interference bugs with other plugins
+- Translated deletion confirm messages
+- Improved ui controls
+
 ## v1.0.3
 - Adding german translation
 - New notes can now be cancelled

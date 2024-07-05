@@ -17,6 +17,9 @@ msgstr ""
 msgid "A handy markdown note block for your admin panel."
 msgstr "Ein praktischer markdown Notizblock für dein Admin-Panel."
 
+msgid "confirm skipping"
+msgstr "überspringen bestätigen"
+
 msgid "New Note"
 msgstr "Neue Notiz"
 
@@ -47,9 +50,6 @@ msgstr "Jetzt aktualisieren"
 msgid "skip this release"
 msgstr "Aktualisierung überspringen"
 
-msgid "confirm skipping"
-msgstr "überspringen bestätigen"
-
 msgid "Need help updating"
 msgstr "Brauchst du Hilfe bei der Aktualisierung"
 
@@ -58,3 +58,9 @@ msgstr "https://era-kast.ch/markdown-auf-einen-blick/"
 
 msgid "cancel"
 msgstr "abbrechen"
+
+msgid "Sure to delete %s ?"
+msgstr "%s wirklich löschen ?"
+
+msgid "save"
+msgstr "speichern"

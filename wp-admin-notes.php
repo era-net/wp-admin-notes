@@ -3,7 +3,7 @@
  * Plugin Name:       WPAdmin Notes
  * Plugin URI:        https://github.com/era-net/wp-admin-notes
  * Description:       A handy markdown note block for your admin panel.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            ERA
@@ -171,7 +171,7 @@ function mdn_render_dashboard_widget($_, $args) {
         <?= $html ?>
     </div>
     <div class="mdn-markdown-footer-flex-end">
-        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-note-id="<?= $note->ID ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
+        <div><button type="button" class="button button-secondary mdn-delete-button" data-name="mdn-note-delete" data-confirm-message="<?= sprintf(__( 'Sure to delete %s ?', 'mdn-notes' ), $note->post_title ) ?>" data-note-id="<?= $note->ID ?>"><?= __( 'delete', 'mdn-notes' ) ?></button></div>
         <div><button type="button" class="button button-primary" data-name="mdn-note-edit" data-note-id="<?= $note->ID ?>"><?= __( 'edit', 'mdn-notes' ) ?></button></div>
     </div>
 

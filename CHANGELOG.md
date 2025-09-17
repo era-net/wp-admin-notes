@@ -1,3 +1,7 @@
+## v1.0.5
+- Reposition new note admin bar button
+- improve translations
+
 ## v1.0.4
 - Fix issue [#9](https://github.com/era-net/wp-admin-notes/issues/9)
 - Fixed interference bugs with other plugins

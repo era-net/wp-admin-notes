@@ -3,7 +3,7 @@
  * Plugin Name:       WPAdmin Notes
  * Plugin URI:        https://github.com/era-net/wp-admin-notes
  * Description:       A handy markdown note block for your admin panel.
- * Version:           1.0.4
+ * Version:           1.0.5
  * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            ERA
@@ -67,7 +67,7 @@ function mdn_enqueue_admin_scripts() {
 /**
  * NEW NOTE TOOLBAR BUTTON
  */
-add_action('admin_bar_menu', 'mdn_custom_toolbar_link', 9998);
+add_action('admin_bar_menu', 'mdn_custom_toolbar_link', 10);
 function mdn_custom_toolbar_link($wp_admin_bar) {
     $screen = get_current_screen();
 
@@ -82,7 +82,7 @@ function mdn_custom_toolbar_link($wp_admin_bar) {
         'href' => 'javascript:void(0);',
         'meta' => array(
             'class' => 'mdn-notes-add-note', 
-            'title' => 'Add a new Markdown note to your Dashboard'
+            'title' => __( 'New markdown note', 'mdn-notes' )
             )
     );
     $wp_admin_bar->add_node($args);

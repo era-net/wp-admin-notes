@@ -78,3 +78,40 @@ h2.mdn-header-edit-state {
 .mdn-delete-button {
     margin-right: 2em !important;
 }
+
+.mdn-footer {
+    margin-top: 8px;
+}
+
+.mdn-footer-actions {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+.mdn-footer-inside {
+    padding: 2px 12px 0 0;
+    float: right;
+}
+
+.mdn-footer-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+@keyframes mdn-fadein {
+    0% {opacity: 0; visibility: visible;}
+    100% {opacity: 1; visibility: visible;}
+}
+
+.mdn-fadein {
+    animation: mdn-fadein 1s linear forwards;
+    -webkit-animation: mdn-fadein 1s linear forwards;
+}

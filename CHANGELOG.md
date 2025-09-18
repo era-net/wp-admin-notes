@@ -1,3 +1,6 @@
+## v1.0.6
+- UI cleanup by implementing hover state for note actions
+
 ## v1.0.5
 - Reposition new note admin bar button
 - improve translations

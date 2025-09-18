@@ -1,5 +1,16 @@
 jQuery(document).ready(($) => {
     check_version($);
+
+    $('div[id^="mdn_note_"]').each((_, el) => {
+        $(el).on("mouseenter", () => {
+            const footer = $(el).find('.mdn-footer-actions')[0];
+            $(footer).addClass('mdn-fadein');
+            $(el).on("mouseleave", () => {
+                $(footer).removeClass("mdn-fadein");
+            });
+        });
+    });
+
     mdn_handle_checkboxes($);
     $( document.body ).on( 'click', '.mdn-notes-add-note, #mdn-notes-add a', (e) => {
 

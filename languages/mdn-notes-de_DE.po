@@ -62,8 +62,8 @@ msgstr "https://era-kast.ch/markdown-auf-einen-blick/"
 msgid "cancel"
 msgstr "abbrechen"
 
-msgid "Sure to delete %s ?"
-msgstr "%s wirklich löschen ?"
+msgid "Sure to delete &quot;%s&quot; ?"
+msgstr "&quot;%s&quot; wirklich löschen ?"
 
 msgid "save"
 msgstr "speichern"

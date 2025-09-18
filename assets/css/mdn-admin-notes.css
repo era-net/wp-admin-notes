@@ -94,6 +94,6 @@ h2.mdn-header-edit-state {
 }
 
 .mdn-fadein {
-    animation: mdn-fadein 1s linear forwards;
-    -webkit-animation: mdn-fadein 1s linear forwards;
+    animation: mdn-fadein 0.6s linear forwards;
+    -webkit-animation: mdn-fadein 0.6s linear forwards;
 }

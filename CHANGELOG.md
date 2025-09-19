@@ -1,3 +1,6 @@
+## v1.0.7
+- Code cleanup
+
 ## v1.0.6
 - UI cleanup by implementing hover state for note actions
 

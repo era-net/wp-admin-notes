@@ -22,7 +22,7 @@ function mdn_md_to_html($md) {
                     foreach ($ul->children() as $x) {
                         foreach ($x->children() as $y) {
                             if ($y->firstChild() instanceof TaskListItemMarker){
-                                return "mdn-has-task-list";
+                                return 'mdn-has-task-list';
                             }
                         }
                     }
@@ -66,7 +66,7 @@ add_action( 'wp_ajax_mdn_add_new_note', 'mdn_add_new_note' );
 function mdn_add_new_note() {
     global $wpdb;
 
-    header("Content-Type: application/json");
+    header('Content-Type: application/json');
 
     $table_name = $wpdb->prefix . 'posts';
     $get_id = $wpdb->get_row("SHOW TABLE STATUS LIKE '$table_name'");
@@ -127,10 +127,10 @@ add_action( 'wp_ajax_nopriv_mdn_save_note', 'mdn_save_note' );
 add_action( 'wp_ajax_mdn_save_note', 'mdn_save_note' );
 function mdn_save_note() {
 
-    header("Content-Type: application/json");
+    header('Content-Type: application/json');
 
     $data = $_POST['data'];
-    $title_content = sanitize_text_field($data["titleContent"]);
+    $title_content = sanitize_text_field($data['titleContent']);
     $note_content = sanitize_textarea_field($data['textContent']);
     $char_count = strlen($note_content);
 
@@ -256,7 +256,7 @@ add_action( 'wp_ajax_nopriv_mdn_update_form_content', 'mdn_update_form_content' 
 add_action( 'wp_ajax_mdn_update_form_content', 'mdn_update_form_content' );
 function mdn_update_form_content() {
 
-    header("Content-Type: application/json");
+    header('Content-Type: application/json');
 
     $id = absint($_POST['id']);
 
@@ -325,7 +325,7 @@ add_action( 'wp_ajax_nopriv_mdn_delete_note', 'mdn_delete_note' );
 add_action( 'wp_ajax_mdn_delete_note', 'mdn_delete_note' );
 function mdn_delete_note() {
 
-    header("Content-Type: application/json");
+    header('Content-Type: application/json');
 
     $post_id = absint($_POST['noteId']);
     
@@ -352,9 +352,9 @@ add_action( 'wp_ajax_nopriv_update_version', 'update_version' );
 add_action( 'wp_ajax_update_version', 'update_version' );
 function update_version() {
 
-    header("Content-Type: application/json");
+    header('Content-Type: application/json');
 
-    $url = "https://era-kast.ch/updater/wp-admin-notes.php";
+    $url = 'https://era-kast.ch/updater/wp-admin-notes.php';
 
     $curl = curl_init($url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -364,10 +364,10 @@ function update_version() {
 
     $rsp = json_decode($response, true);
 
-    update_option("mdn_latest", $rsp["version"]);
+    update_option('mdn_latest', $rsp['version']);
 
     $succ = [
-        'status' => "success"
+        'status' => 'success'
     ];
 
     echo json_encode($succ);
@@ -382,14 +382,14 @@ add_action( 'wp_ajax_nopriv_mdn_skip_release', 'mdn_skip_release' );
 add_action( 'wp_ajax_mdn_skip_release', 'mdn_skip_release' );
 function mdn_skip_release() {
     
-    header("Content-Type: application/json");
+    header('Content-Type: application/json');
 
-    $latest = get_option("mdn_latest");
+    $latest = get_option('mdn_latest');
 
-    update_option("mdn_release_skip", $latest);
+    update_option('mdn_release_skip', $latest);
 
     $succ = [
-        'status' => "success"
+        'status' => 'success'
     ];
 
     echo json_encode($succ);

@@ -1,23 +1,24 @@
 jQuery(document).ready(($) => {
     check_version($);
 
+    mdn_handle_checkboxes($);
+
     $('div[id^="mdn_note_"]').each((_, el) => {
         $(el).on("mouseenter", () => {
-            const footer = $(el).find('.mdn-footer-actions')[0];
-            $(footer).addClass('mdn-fadein');
+            const footer = $(el).find(".mdn-footer-actions")[0];
+            $(footer).addClass("mdn-fadein");
             $(el).on("mouseleave", () => {
                 $(footer).removeClass("mdn-fadein");
             });
         });
     });
 
-    mdn_handle_checkboxes($);
-    $( document.body ).on( 'click', '.mdn-notes-add-note, #mdn-notes-add a', (e) => {
+    $( document.body ).on( "click", ".mdn-notes-add-note, #mdn-notes-add a", (e) => {
 
         $.ajax({
             url: ajaxurl,
             method: "POST",
-            data: { action: 'mdn_add_new_note' },
+            data: { action: "mdn_add_new_note" },
             success: (re) => {
                 $("#normal-sortables").prepend(re.note);
                 $("#" + re.textContentId).trigger("focus");
@@ -36,10 +37,10 @@ jQuery(document).ready(($) => {
                         let textarea = document.getElementById(re.textContentId);
                         e.preventDefault();
                         textarea.setRangeText(
-                            '\t',
+                            "\t",
                             textarea.selectionStart,
                             textarea.selectionStart,
-                            'end'
+                            "end"
                         )
                     }
                 });
@@ -104,15 +105,15 @@ function mdn_save_handler($, obj) {
     $.ajax({
         url: ajaxurl,
         method: "POST",
-        data: { action: 'mdn_save_note', data: data },
+        data: { action: "mdn_save_note", data: data },
         success: (re) => {
-            if (re.status === 'success') {
+            if (re.status === "success") {
                 $("#" + obj.contentId).html(re.content);
                 mdn_revoke_footer_actions($);
                 mdn_revoke_edit_listeners($);
                 mdn_revoke_delete_listeners($);
                 mdn_handle_checkboxes($);
-            } else if (re.status === 'large_content') {
+            } else if (re.status === "large_content") {
                 alert("Content exceeded ... Max. 2500 characters");
                 $("#" + obj.textContentId).prop("disabled", false);
                 $("#" + obj.textContentId).trigger("focus");
@@ -153,8 +154,8 @@ function mdn_revoke_footer_actions($) {
 
     $('div[id^="mdn_note_"]').each((_, el) => {
         $(el).on("mouseenter", () => {
-            const footer = $(el).find('.mdn-footer-actions')[0];
-            $(footer).addClass('mdn-fadein');
+            const footer = $(el).find(".mdn-footer-actions")[0];
+            $(footer).addClass("mdn-fadein");
             $(el).on("mouseleave", () => {
                 $(footer).removeClass("mdn-fadein");
             });
@@ -199,7 +200,7 @@ function mdn_handle_update_state($, noteId) {
     $.ajax({
         url: ajaxurl,
         method: "POST",
-        data: {action: 'mdn_update_form_content', id: noteId},
+        data: {action: "mdn_update_form_content", id: noteId},
         success: (re) => {
             $(title).html("");
             $(formBody).html("");
@@ -223,11 +224,11 @@ function mdn_handle_update_state($, noteId) {
 
             $(header).append(controlsDiv);
 
-            if (re.status === 'success') {
+            if (re.status === "success") {
                 $(title).append(input);
                 $(title).next().hide();
                 formBody.append(re.html);
-                const textArea = $('#' + re.textContentId);
+                const textArea = $("#" + re.textContentId);
 
                 const obj = {
                     "noteId": noteId,
@@ -250,10 +251,10 @@ function mdn_handle_update_state($, noteId) {
                         let textarea = document.getElementById(re.textContentId);
                         e.preventDefault();
                         textarea.setRangeText(
-                            '\t',
+                            "\t",
                             textarea.selectionStart,
                             textarea.selectionStart,
-                            'end'
+                            "end"
                         );
                     }
                 });
@@ -320,7 +321,7 @@ function mdn_init_delete_listeners($) {
                 $.ajax({
                     url: ajaxurl,
                     method: "POST",
-                    data: {action: 'mdn_delete_note', noteId: noteId},
+                    data: {action: "mdn_delete_note", noteId: noteId},
                     success: (re) => {
                         if (re.status === "success") {
                             $("#mdn_note_" + $(el).data("note-id")).remove();
@@ -338,7 +339,7 @@ function mdn_init_delete_listeners($) {
 }
 
 function mdn_handle_checkboxes($) {
-    $('.mdn-markdown-content ul').each((_, el) => {
+    $(".mdn-markdown-content ul").each((_, el) => {
         $(el).find("li").children().each((_, el) => {
             if (el.nodeName === "INPUT") {
                 el.disabled = false;

@@ -1,3 +1,7 @@
+## v1.0.7
+- Code cleanup
+- handling codeblock overflow
+
 ## v1.0.6
 - UI cleanup by implementing hover state for note actions
 

@@ -30,6 +30,10 @@ div.mdn-markdown-content pre {
     background: rgba(0,0,0,.07);
 }
 
+div.mdn-markdown-content pre {
+    overflow: scroll;
+}
+
 div.mdn-markdown-content pre code {
     padding: 0;
     background: none;

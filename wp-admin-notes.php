@@ -3,7 +3,7 @@
  * Plugin Name:       WPAdmin Notes
  * Plugin URI:        https://github.com/era-net/wp-admin-notes
  * Description:       A handy markdown note block for your admin panel.
- * Version:           1.0.6
+ * Version:           1.0.7
  * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            ERA
@@ -41,7 +41,7 @@ function mdn_admin_init() {
         'show_in_menu'    => false,
         'capability_type' => 'post',
         'map_meta_cap'    => true,
-        'rewrite'         => array( 'slug'         => 'notes' ),
+        'rewrite'         => array( 'slug' => 'notes' ),
         '_builtin'        => false,
         'query_var'       => true,
         'supports'        => array( 'title', 'editor' )
@@ -53,7 +53,7 @@ function mdn_enqueue_admin_scripts() {
 
     $screen = get_current_screen();
     // The styles and scripts for the functionality are only needed in the dashboard
-    if ($screen->id == "dashboard") {
+    if ($screen->id == 'dashboard') {
         wp_enqueue_style('mdn-admin-markdown', plugin_dir_url(__FILE__) . 'assets/css/mdn-admin-notes.min.css');
         wp_enqueue_script('mdn-admin-notes-backend', plugin_dir_url(__FILE__) . 'assets/js/mdn-admin-notes.min.js', ['jquery'], '', true);
     }
@@ -203,14 +203,14 @@ add_action('current_screen', 'mdn_check_for_updates');
 function mdn_check_for_updates() {
     // update the current version
     $pd = get_plugin_data(__FILE__);
-    $version = $pd["Version"];
-    $current = "mdn_version";
+    $version = $pd['Version'];
+    $current = 'mdn_version';
     update_option($current, $version);
 
-    $new = "mdn_latest";
+    $new = 'mdn_latest';
     // check if option exists
     if (get_option($new)) {
-        $skip = "mdn_release_skip";
+        $skip = 'mdn_release_skip';
         // do not trigger notice if user skipped this release
         if (get_option($new) === get_option($skip)) {
             return;
@@ -226,7 +226,7 @@ function mdn_check_for_updates() {
 function mdn_show_update_notice() {
     $screen = get_current_screen();
     // do not show during the updating process
-    if ($screen->id !== "update") {
+    if ($screen->id !== 'update') {
         ?>
         <div id="mdn-admin-update-notice" class="notice notice-warning">
             

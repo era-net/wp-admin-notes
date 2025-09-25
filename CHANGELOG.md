@@ -1,3 +1,6 @@
+## v1.1.0
+- Improving performance by preloading note contents on hover
+
 ## v1.0.7
 - Code cleanup
 - handling codeblock overflow

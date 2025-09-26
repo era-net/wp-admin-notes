@@ -3,7 +3,7 @@
  * Plugin Name:       WPAdmin Notes
  * Plugin URI:        https://github.com/era-net/wp-admin-notes
  * Description:       A handy markdown note block for your admin panel.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            ERA
@@ -237,12 +237,12 @@ function mdn_show_update_notice() {
                     echo '<div style="margin-top: 0.5em; padding-top: 2px;"></div>';
                 } else {
                     ?>
-                        <h3>WPAdmin Notes <small><?= __( 'just released an update', 'mdn-notes' ) ?></small></h3>
+                        <h3>WPAdmin Notes <small><?= __( 'released an update', 'mdn-notes' ) ?></small>!</h3>
                         <p>
                             <a href="<?= esc_url( admin_url() . 'plugin-install.php?tab=upload' ) ?>" class="button button-primary"> <strong><?= __( 'Update Now', 'mdn-notes' ) ?></strong>!</a> 
                             <button id="mdn-skip-release" class="button button-secondary"><?= __( 'skip this release', 'mdn-notes' ) ?></button>
                             <div>
-                                <a href="#"><?= __( 'Need help updating', 'mdn-notes' ) ?>?</a> | 
+                                <a href="<?= __( 'https://era-kast.ch/en/help-update-wp-admin-notes/', 'mdn-notes' ) ?>" target="_blank"><?= __( 'Need help updating', 'mdn-notes' ) ?>?</a> | 
                                 <a href="https://github.com/era-net/wp-admin-notes/releases/latest" target="_blank"><strong><?= get_option("mdn_latest") ?></strong></a>
                             </div>
                         </p>

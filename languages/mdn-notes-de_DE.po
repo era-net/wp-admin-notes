@@ -44,14 +44,17 @@ msgstr "Neue Markdown-Notiz"
 msgid "edit"
 msgstr "bearbeiten"
 
-msgid "just released an update"
-msgstr "hat gerade ein Update veröffentlicht"
+msgid "released an update"
+msgstr "hat ein Update veröffentlicht"
 
 msgid "Update Now"
 msgstr "Jetzt aktualisieren"
 
 msgid "skip this release"
 msgstr "Aktualisierung überspringen"
+
+msgid "https://era-kast.ch/en/help-update-wp-admin-notes/"
+msgstr "https://era-kast.ch/hilfe-aktualisierung-wp-admin-notes/"
 
 msgid "Need help updating"
 msgstr "Brauchst du Hilfe bei der Aktualisierung"

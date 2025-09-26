@@ -1,3 +1,6 @@
+## v1.1.1
+- Fix dead help links in update process
+
 ## v1.1.0
 - Improving performance by preloading note contents on hover
 
